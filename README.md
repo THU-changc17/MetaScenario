@@ -26,7 +26,7 @@ images for their input data. Similar to the format
 provided by the official [Lyft dataset](https://level-5.global/data/), our data framework
 can support a convenient conversion to this format.
 
-![Image](https://github.com/THU-changc17/MetaScenario/blob/main/Visualization/snap_exp.png)
+<div align=center><img src="https://github.com/THU-changc17/MetaScenario/blob/main/Visualization/snapimage.png"/></div>
 
 To characterize the atom scenarios, we use the structure of
 semantic graphs. We need a range of space and time parameters, a
