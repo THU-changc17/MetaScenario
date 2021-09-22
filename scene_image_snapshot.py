@@ -34,14 +34,7 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
     way_list = utils.SearchWayFromDB(cursor)
     print(way_list)
     for way_id in way_list:
-        # x_list, y_list = utils.SearchNodeIDOnWayFromDB(cursor, way_id=way_id)
         node_list, x_list, y_list = utils.SearchNodeIDOnWayFromDB(cursor, way_id=way_id, x_range=Xlist, y_range=Ylist)
-        # print(node_list)
-        # x_list = np.array(x_list)
-        # y_list = np.array(y_list)
-        # if((x_list < Xlist[0]) | (x_list > Xlist[1])).all():
-        #     if((y_list < Ylist[0]) | (y_list > Ylist[1])).all():
-        #         continue
         way_type, way_subtype = utils.SearchWayTypeFromDB(cursor, way_id=way_id)
 
         if way_type == "curbstone":
@@ -117,7 +110,6 @@ def draw_vehicle_and_trajectory(cursor, axes, ego, timestamp, interval, table):
     # plt.plot(ego_x_list, ego_y_list, color='red', marker = "o", markersize=5.0)
 
     for vehicle in vehicle_list:
-        # print(vehicle)
         x, y, orientation = utils.SearchTrafficParticipantTiming(cursor, vehicle, timestamp, table)
         vehicle_location = [x, y, orientation]
         vehicle_property = utils.SearchTrafficParticipantProperty(cursor, vehicle, table)
@@ -153,19 +145,13 @@ if __name__ == '__main__':
     fig, axes = plt.subplots(1, 1)
     axes.set_xticks([])
     axes.set_yticks([])
-    # axes.spines['top'].set_visible(False)
-    # axes.spines['bottom'].set_visible(False)
-    # axes.spines['left'].set_visible(False)
-    # axes.spines['right'].set_visible(False)
     plt.gca().xaxis.set_major_locator(plt.NullLocator())
     plt.gca().yaxis.set_major_locator(plt.NullLocator())
     plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
     plt.margins(0, 0)
     fig.canvas.set_window_title("DatasetMap Visualization")
-    # draw_map(cursor, axes)
     x, y = draw_vehicle_and_trajectory(cursor, axes, 10, 1000, 1000, "_5")
     draw_map_part(cursor, axes, Xlist=[x - 30, x + 20], Ylist=[y - 20, y + 20])
-    # draw_map_part(cursor, axes, Xlist=[400,500],Ylist=[1000,1300])
     fig.set_size_inches(5, 4)
     plt.show()
     fig.savefig('../save_name.eps')

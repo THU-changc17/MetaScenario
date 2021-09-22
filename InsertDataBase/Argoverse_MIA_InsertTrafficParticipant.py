@@ -67,63 +67,42 @@ def GetMinDistanceLane(local_x, local_y):
         cursor.execute(sql)
         node_list = list()
         for i in cursor.fetchall():
-            # print(i)
             node_list.append(i[0])
             way_list.append(i[1])
         radius = 2 * radius
     
     way_list = list(set(way_list))
-    # position_dict = dict()
-    # position_list = list()
-    # way_node_list = list()
     vehicle_position_list = np.array([[local_x, local_y]])
     dist = np.inf
     lane = None
     for way_id in way_list:
         temp_position_list = list()
-        # temp_way_node_list = list()
-        # temp_position_dict = dict()
         sql = "select Node_Info.node_id, local_x, local_y " \
               "from Node_Info " \
               "join Node_To_Way on Node_Info.node_id = Node_To_Way.node_id " \
               "where way_id = %s" % (way_id)
         cursor.execute(sql)
         for i in cursor.fetchall():
-            # temp_way_node_list.append(i[0])
             temp_position_list.append([float(i[1]), float(i[2])])
-            # temp_position_dict[i[0]] = np.array([float(i[1]), float(i[2])])
         temp_position_list = np.array(temp_position_list)
         new_dist = distance.cdist(vehicle_position_list, temp_position_list).min(axis=1).min(axis=0)
         if new_dist < dist:
             dist = new_dist
             lane = str(way_id)
-            # way_node_list = temp_way_node_list
-            # position_dict = temp_position_dict
-            # position_list = temp_position_list
-    # print(dist)
-    # print(position_list)
-    # print(position_dict)
-    # direction = position_list[-1] - position_list[0]
-    # orien = math.atan2(direction[1], direction[0])
     return lane
 
 
 def InsertTable(VehicleInfo, table):
-    # 取前n条数据做样例
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,orientation,lane_id) " \
                 "values(%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
         time_stamp = int(float(VehicleInfo[i][0]) * 1e+3)
-        # print(time_stamp)
         id_str = VehicleInfo[i][1].split('-')
         vehicle_id = int(id_str[-1])
-        # print(vehicle_id)
         local_x = float(VehicleInfo[i][3])
         local_y = float(VehicleInfo[i][4])
         lane = GetMinDistanceLane(local_x, local_y)
         orien = 0.000
-        # velocity = round(math.sqrt(VehicleInfo[i][6] * VehicleInfo[i][6] + VehicleInfo[i][7] * VehicleInfo[i][7]), 3)
-        # orientation = VehicleInfo[i][8]
         cursor.execute(insertTimingSql,(time_stamp, vehicle_id, local_x, local_y, orien, lane))
         if (i % 100 == 0):
             print(i)
@@ -131,20 +110,10 @@ def InsertTable(VehicleInfo, table):
     insertPropertySql = "insert into Traffic_participant_property" + table + "(vehicle_id,vehicle_class) " \
                 "values(%s,%s) ON DUPLICATE KEY UPDATE vehicle_class = vehicle_class"
     for i in range(len(VehicleInfo)):
-        # print(type(time_stamp))
         vehicle_type = VehicleInfo[i][2]
         id_str = VehicleInfo[i][1].split('-')
         vehicle_id = int(id_str[-1])
-        vehicle_class = None
-        # print(type(vehicle_type))
         vehicle_class = int(1)
-        # if(vehicle_type == "AV"):
-        #     vehicle_class = int(0)
-        # elif(vehicle_type == "AGENT"):
-        #     vehicle_class = int(1)
-        # elif (vehicle_type == "OTHERS"):
-        #     vehicle_class = int(2)
-        # print(vehicle_class)
         cursor.execute(insertPropertySql,(vehicle_id, vehicle_class))
         if (i % 100 == 0):
             print(i)
@@ -163,7 +132,6 @@ def InsertTable(VehicleInfo, table):
     timestamp_list.sort()
     vehicle_zero_orien_list = list()
     for t in range(len(timestamp_list) - 1):
-        # print(t)
         vehicle_list = list()
         cursor.execute(vehiclesql, timestamp_list[t + 1])
         for vehicle in cursor.fetchall():
@@ -198,7 +166,6 @@ def InsertTable(VehicleInfo, table):
                 else:
                     cursor.execute(UpdateParticipantSql, (orien, timestamp_list[t + 1], vehicle))
                 if vehicle in vehicle_zero_orien_list:
-                    # print(vehicle, t, orien)
                     cursor.execute(UpdateParticipantSql, (orien, timestamp_list[t], vehicle))
                     vehicle_zero_orien_list.remove(vehicle)
 
@@ -213,8 +180,6 @@ if __name__ == '__main__':
         VehicleInfo = pd.read_csv(file, decimal=",", low_memory=False)
         VehicleInfo = np.array(VehicleInfo)
         table = "_" + table
-        # VehicleInfo = np.hstack((VehicleInfo[:, 0:4], VehicleInfo[:, 4:].astype(np.float)))
-        # print(type(VehicleInfo[0][0]))
         CreateTrafficParticipantPropertyTable(table)
         CreateTrafficTimingStateTable(table)
         InsertTable(VehicleInfo, table)

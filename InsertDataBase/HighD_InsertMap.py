@@ -3,6 +3,7 @@ import numpy as np
 import pymysql
 import json
 
+
 conn = pymysql.connect(
     host='localhost',
     user="root",
@@ -114,6 +115,7 @@ extracted_meta_dictionary = {ID: int(df[ID][0]),
                              UPPER_LANE_MARKINGS: np.fromstring(df[UPPER_LANE_MARKINGS][0], sep=";"),
                              LOWER_LANE_MARKINGS: np.fromstring(df[LOWER_LANE_MARKINGS][0], sep=";")}
 
+
 meta_dictionary = extracted_meta_dictionary
 y_sign = -1
 upper_lanes = meta_dictionary[UPPER_LANE_MARKINGS]
@@ -145,6 +147,7 @@ way_node.append(temp_way)
 type_list.append("road_border")
 id_sum = id_sum + len(temp_way)
 
+
 for i in range(1, upper_lanes_shape[0] - 1):
     node_x_list = list(np.linspace(0, 400, 40))
     node_y_list = list([y_sign * upper_lanes[i]]) * len(node_x_list)
@@ -159,6 +162,7 @@ for i in range(1, upper_lanes_shape[0] - 1):
     id_sum = id_sum + len(temp_way)
     type_list.append("line_thin;dashed")
 
+
 node_x_list = list(np.linspace(0, 400, 40))
 node_y_list = list([y_sign * upper_lanes[-1]]) * len(node_x_list)
 temp_way = list()
@@ -172,6 +176,7 @@ way_node.append(temp_way)
 id_sum = id_sum + len(temp_way)
 type_list.append("road_border")
 
+
 node_x_list = list(np.linspace(0, 400, 40))
 node_y_list = list([y_sign * lower_lanes[0]]) * len(node_x_list)
 temp_way = list()
@@ -184,6 +189,7 @@ for i in range(id_sum, len(node_x_list) + id_sum):
 way_node.append(temp_way)
 id_sum = id_sum + len(temp_way)
 type_list.append("road_border")
+
 
 for i in range(1, lower_lanes_shape[0] - 1):
     node_x_list = list(np.linspace(0, 400, 40))
@@ -199,6 +205,7 @@ for i in range(1, lower_lanes_shape[0] - 1):
     id_sum = id_sum + len(temp_way)
     type_list.append("line_thin;dashed")
 
+
 node_x_list = list(np.linspace(0, 400, 40))
 node_y_list = list([y_sign * lower_lanes[-1]]) * len(node_x_list)
 temp_way = list()
@@ -212,20 +219,22 @@ way_node.append(temp_way)
 id_sum = id_sum + len(temp_way)
 type_list.append("road_border")
 
+
 for i in range(len(way_node)):
     print(i)
     for j in way_node[i]:
         print(j.id)
 
+
 if __name__ == '__main__':
     insertNodeInfoSql = "insert into Node_Info(node_id,local_x,local_y) " \
-                        "values(%s,%s,%s)"
+                          "values(%s,%s,%s)"
     insertWayInfoSql = "insert into Way_Info(way_id,way_type,road_channelization,l_neighbor_id,r_neighbor_id) " \
-                       "values(%s,%s,%s,%s,%s)"
+                            "values(%s,%s,%s,%s,%s)"
     insertNodeToWaySql = "insert into Node_To_Way(way_id,node_id) " \
-                         "values(%s,%s)"
+                            "values(%s,%s)"
     insertLaneMetaSql = "insert into Lane_Meta(lane_id,lane_property,l_adj_lane,r_adj_lane) " \
-                        "values(%s,%s,%s,%s)"
+                         "values(%s,%s,%s,%s)"
     UpdateWayLeftBorderSql = "Update Way_Info set l_border_of = %s where way_id = %s"
     UpdateWayRightBorderSql = "Update Way_Info set r_border_of = %s where way_id = %s"
     CreateWayInfoTable()
@@ -233,11 +242,11 @@ if __name__ == '__main__':
     CreateNodeInfoTable()
     CreateLaneMetaTable()
     CreateAdditionalConditionTable()
-    l_border_dict = {2: 1, 3: 2, 5: 3, 6: 4}
-    r_border_dict = {2: 0, 3: 1, 5: 4, 6: 5}
-    l_adj_lane = {2: 3, 6: 5}
-    r_adj_lane = {3: 2, 5: 6}
-    for i in [2, 3, 5, 6]:
+    l_border_dict = {2:1, 3:2, 5:3, 6:4}
+    r_border_dict = {2:0, 3:1, 5:4, 6:5}
+    l_adj_lane = {2:3, 6:5}
+    r_adj_lane = {3:2, 5:6}
+    for i in [2,3,5,6]:
         type_dict = dict()
         type_dict["base"] = "lanelet"
         cursor.execute(insertLaneMetaSql, (i, json.dumps(type_dict), l_adj_lane.get(i), r_adj_lane.get(i)))
@@ -255,22 +264,22 @@ if __name__ == '__main__':
             type_dict["subtype"] = type_split[1]
         l_neighbor_id = None
         r_neighbor_id = None
-        if (i > 0):
-            l_neighbor_id = 10000 + i - 1
-        if (i < len(way_node) - 1):
-            r_neighbor_id = 10000 + i + 1
-        way_id = int(10000 + i)
-        cursor.execute(insertWayInfoSql, (way_id, json.dumps(type_dict), json.dumps(road_channelization_dict),
-                                          l_neighbor_id, r_neighbor_id))
+        if(i>0):
+            l_neighbor_id = 10000+i-1
+        if(i<len(way_node)-1):
+            r_neighbor_id = 10000+i+1
+        way_id = int(10000+i)
+        cursor.execute(insertWayInfoSql, (way_id,json.dumps(type_dict),json.dumps(road_channelization_dict),
+                       l_neighbor_id,r_neighbor_id))
         for node in way:
             print(node.id)
-            cursor.execute(insertNodeInfoSql, (node.id, round(node.x, 3), round(node.y, 3)))
+            cursor.execute(insertNodeInfoSql, (node.id, round(node.x,3),round(node.y,3)))
             cursor.execute(insertNodeToWaySql, (way_id, node.id))
 
     for key, value in l_border_dict.items():
-        cursor.execute(UpdateWayLeftBorderSql % (str(key), 10000 + value))
+        cursor.execute(UpdateWayLeftBorderSql%(str(key), 10000 + value))
     for key, value in r_border_dict.items():
-        cursor.execute(UpdateWayRightBorderSql % (str(key), 10000 + value))
+        cursor.execute(UpdateWayRightBorderSql%(str(key), 10000 + value))
 
     cursor.close()
     conn.commit()

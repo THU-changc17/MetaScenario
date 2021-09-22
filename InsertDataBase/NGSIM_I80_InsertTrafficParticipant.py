@@ -57,17 +57,14 @@ def CreateTrafficParticipantPropertyTable(table):
 
 
 def InsertTable(table):
-    # 取前n条数据做样例
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,acceleration,orientation,lane_id,preced_vehicle,follow_vehicle) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
-        # NGSIM数据集01采样频率10Hz
+        # NGSIM record frequency 10Hz
         time_stamp = int(VehicleInfo[i][1])
-        # print(type(time_stamp))
         vehicle_id = VehicleInfo[i][0]
-        # print(type(vehicle_id))
         local_x = VehicleInfo[i][3]
-        # 将NGSIM坐标系是正常的沿x轴翻转
+        # NGSIM Coordinate system reverse x-axis
         local_y = y_sign * VehicleInfo[i][2]
         velocity_x = round(VehicleInfo[i][4], 3)
         acceleration = round(VehicleInfo[i][5], 3)
@@ -87,17 +84,9 @@ def InsertTable(table):
     insertPropertySql = "insert into Traffic_participant_property" + table + "(vehicle_id,vehicle_class,vehicle_length,vehicle_width) " \
                 "values(%s,%s,%s,%s) ON DUPLICATE KEY UPDATE vehicle_class = vehicle_class,vehicle_length = vehicle_length,vehicle_width = vehicle_width"
     for i in range(len(VehicleMeta)):
-        # print(type(time_stamp))
         vehicle_id = VehicleMeta[i][0]
-        # 1 - 摩托车, 2 - 汽车, 3 - 卡车
+        # 1 - motor, 2 - car, 3 - truck
         vehicle_type = int(VehicleMeta[i][3])
-        # print(type(vehicle_type))
-        # if(vehicle_type == "Car"):
-        #     vehicle_class = 1
-        # elif(vehicle_type == "Truck"):
-        #     vehicle_class = 2
-        # else:
-        #     vehicle_class = 0
         vehicle_length = VehicleMeta[i][1]
         vehicle_width = VehicleMeta[i][2]
         cursor.execute(insertPropertySql,(vehicle_id,vehicle_type,vehicle_length,vehicle_width))
@@ -108,9 +97,6 @@ if __name__ == '__main__':
     CreateTrafficParticipantPropertyTable(table)
     CreateTrafficTimingStateTable(table)
     InsertTable(table)
-    # sql = "SELECT preced_vehicle FROM Traffic_timing_state WHERE preced_vehicle NOT IN (SELECT vehicle_id FROM Traffic_participant_property)"
-    # cursor.execute(sql)
-    # print(cursor.fetchall())
 
     cursor.close()
     conn.commit()

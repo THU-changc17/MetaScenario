@@ -82,13 +82,7 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
 
     way_list = utils.SearchWayFromDB(cursor)
     for way_id in way_list:
-        # x_list, y_list = utils.SearchNodeIDOnWayFromDB(cursor, way_id=way_id)
         node_list, x_list, y_list = utils.SearchNodeIDOnWayFromDB(cursor, way_id=way_id, x_range=Xlist, y_range=Ylist)
-        # x_list = np.array(x_list)
-        # y_list = np.array(y_list)
-        # if((x_list < Xlist[0]) | (x_list > Xlist[1])).all():
-        #     if((y_list < Ylist[0]) | (y_list > Ylist[1])).all():
-        #         continue
         way_type, way_subtype = utils.SearchWayTypeFromDB(cursor, way_id=way_id)
 
         if way_type == "curbstone":

@@ -131,7 +131,6 @@ def get_type(element):
     return type_dict
 
 
-# 对Interaction数据集，专用渠化获取操作方式
 def get_road_channelization(element):
     road_channelization_dict = dict()
     channelization_list = ["pedestrian_marking", "stop_line", "road_border", "guard_rail", "is_intersection"]
@@ -238,9 +237,6 @@ def FittingLaneCurve(lane_id):
         left_node.append(i[0])
         left_node_x.append(float(i[1]))
         left_node_y.append(float(i[2]))
-    # print(left_node)
-    # print(left_node_x)
-    # print(left_node_y)
 
     zipped = zip(left_node, left_node_x, left_node_y)
     sorted_zip = sorted(zipped, key=lambda x:(x[1],x[2]))
@@ -251,9 +247,7 @@ def FittingLaneCurve(lane_id):
     left_p = np.poly1d(left_z)
     y_pred_left = left_p(left_node_x)
     print(lane_id, "left_border: ", left_p)
-    # plot1 = pylab.plot(left_node_x, left_node_y, '*', label='L Border Nodes')
-    # plot2 = pylab.plot(left_node_x, y_pred_left, 'r', label='Fit L_Border Curve')
-    # pylab.legend(loc=3, borderaxespad=0., bbox_to_anchor=(0, 0))
+
 
     SearchRightLaneNodesql = '''select Node_Info.node_id,local_x,local_y from (Node_Info join Node_To_Way on Node_Info.node_id = Node_To_Way.node_id)
             join Way_Info on Node_To_Way.way_id = Way_Info.way_id
@@ -266,9 +260,6 @@ def FittingLaneCurve(lane_id):
         right_node.append(i[0])
         right_node_x.append(float(i[1]))
         right_node_y.append(float(i[2]))
-    # print(right_node)
-    # print(right_node_x)
-    # print(right_node_y)
 
     zipped = zip(right_node, right_node_x, right_node_y)
     sorted_zip = sorted(zipped, key=lambda x: (x[1], x[2]))
@@ -280,13 +271,6 @@ def FittingLaneCurve(lane_id):
     y_pred_right = right_p(right_node_x)
     print(lane_id, "right_border: ", right_p)
     return left_node_x, left_node_y, y_pred_left, right_node_x, right_node_y, y_pred_right
-    # plot1 = pylab.plot(right_node_x, right_node_y, 'o', label='R Border Nodes')
-    # plot2 = pylab.plot(right_node_x, y_pred_right, 'y', label='Fit R_Border Curve')
-    # pylab.legend(loc="upper left")
-    # pylab.title("Lane %s Curve Fitting"%(lane_id))
-    # pylab.xlabel("x")
-    # pylab.ylabel("y")
-    # pylab.show()
 
 
 def InsertMapTable():
@@ -302,13 +286,11 @@ def InsertMapTable():
         point.x, point.y = projector.latlon2xy(float(node.get('lat')), float(node.get('lon')))
         point_dict[int(node.get('id'))] = point
 
-    # 插入节点信息
     insertNodeInfoSql = "insert into Node_Info(node_id,local_x,local_y) " \
                       "values(%s,%s,%s)"
     for node_id,point in point_dict.items():
         cursor.execute(insertNodeInfoSql,(node_id,round(point.x,3),round(point.y,3)))
 
-    # 插入道路信息
     insertWayInfoSql = "insert into Way_Info(way_id,way_type,road_channelization,dynamic_facility,static_facility,l_neighbor_id,r_neighbor_id,predecessor,successor) " \
                         "values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     insertNodeToWaySql = "insert into Node_To_Way(way_id,node_id) " \
@@ -325,7 +307,7 @@ def InsertMapTable():
                         adjacent_way_dict.get("l_neighbor_id"),
                         adjacent_way_dict.get("r_neighbor_id"), adjacent_way_dict.get("predecessor"),
                         adjacent_way_dict.get("successor")))
-        # 插入道路与节点对应关系
+
         node_list = get_node_lists(way,point_dict)
         for node_id in node_list:
             cursor.execute(insertNodeToWaySql,(int(way.get('id')),node_id))
@@ -342,37 +324,15 @@ def InsertMapTable():
 
 
 if __name__ == '__main__':
-    # CreateNodeInfoTable()
-    # CreateWayInfoTable()
-    # CreateNodeToWayTable()
-    # CreateLaneMetaTable()
-    # CreateAdditionalConditionTable()
-    # InsertMapTable()
-    # UpdateLaneWayConnection()
+    CreateNodeInfoTable()
+    CreateWayInfoTable()
+    CreateNodeToWayTable()
+    CreateLaneMetaTable()
+    CreateAdditionalConditionTable()
+    InsertMapTable()
+    UpdateLaneWayConnection()
 
-    plt.figure(figsize=(14, 10))
-    for plt_index in range(1, 8, 2):
-        # 往画布上添加子图：按三行二列，添加到下标为plt_index的位置
-        plt.subplot(2, 2, plt_index / 2 + 1)
-        # 绘图
-        left_node_x, left_node_y, y_pred_left, right_node_x, right_node_y, y_pred_right = FittingLaneCurve(plt_index)
-        # if plt_index == 1:
-        plot1 = plt.plot(left_node_x, left_node_y, '*', label='L Border Nodes')
-        plot2 = plt.plot(left_node_x, y_pred_left, 'r', label='Fit L_Border Curve')
-        plot3 = plt.plot(right_node_x, right_node_y, 'o', label='R Border Nodes')
-        plot4 = plt.plot(right_node_x, y_pred_right, 'r', label='Fit L_Border Curve')
-        plt.legend(loc="best")
-        # else:
-        #     plot1 = plt.plot(left_node_x, left_node_y, '*')
-        #     plot2 = plt.plot(left_node_x, y_pred_left, 'r')
-        #     plot3 = plt.plot(right_node_x, right_node_y, 'o')
-        #     plot4 = plt.plot(right_node_x, y_pred_right, 'r')
-        plt.title("Lane %s Curve Fitting"%(plt_index))
-        plt.xlabel("localx")
-        plt.ylabel("localy")
-    plt.savefig("../merge_curve.eps")
-    plt.show()
-
+    # FittingLaneCurve(1)
     # FittingLaneCurve(2)
     # FittingLaneCurve(3)
     # FittingLaneCurve(4)

@@ -32,7 +32,6 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
     for i in range(len(timestampresult)):
         timestamp_set.add(timestampresult[i][0])
     timestamp_list = list(timestamp_set)
-    print(timestamp_list)
     timestamp_list.sort()
     min_x, max_x, min_y, max_y = utils.SearchLocationRangeFromDB(cursor, table)
     X_range = [min_x - 10, max_x + 10]
@@ -98,22 +97,16 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
         for remove_vehicle_plot in remove_list:
             vehicle_in_graph.remove(remove_vehicle_plot)
 
-        if DB=="NGSIM_Scenario_DB":
-            timeStamp = float(timestamp / 1000)  # 毫秒时间戳转为秒级时间戳
-            timeArray = time.localtime(timeStamp)  # float变为时间戳
-            ntCtime_str = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)  # 时间戳转成Y-M-D的str
+        if DB=="NGSIM_I80_Scenario_DB":
+            timeStamp = float(timestamp / 1000)  # ms timestamp to s
+            timeArray = time.localtime(timeStamp)  # float to timestamp
+            ntCtime_str = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)  # Y-M-D str
             plt.title("Dataset Visualization TimeStamp: %s " %(ntCtime_str))
-        elif DB=="Argoverse_Scenario_DB":
+        elif DB=="Argoverse_MIA_Scenario_DB":
             plt.title("Dataset Visualization TimeStamp: %s " % float(int(timestamp) / 1e+3))
         else:
             plt.title("Dataset Visualization Time: %s s" % round(timestamp / 1000, 3))
         fig.set_size_inches(19.2, 10.8)
-        # if((timestamp-1113433136100) % 1000 == 0):
-        # if (timestamp % 1000 == 0):
-        plt.savefig('../visual_exp/Inter_%d.eps' %(timestamp))
-        print(timestamp)
-        # if(plottime % 10000 == 0):
-        #     print(plottime)
         plt.pause(0.001)
 
     plt.ioff()

@@ -17,7 +17,6 @@ conn = pymysql.connect(
         user="root",
         passwd="123456",
         db="Interaction_MergingZS_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 
@@ -44,11 +43,9 @@ def TrajectoryChunk(cursor, ChunkSize, vehicle_id, table):
 
 def TotalTimeStatistic(cursor, table):
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
-    # print(AllVehicleList)
     TotalTimelist = list()
     for vehicle in AllVehicleList:
         TotalTime = utils.SearchVehicleTotalTime(cursor, vehicle, table)
-        # print(TotalTime)
         TotalTimeS = int(TotalTime / 1000)
         TotalTimelist.append(TotalTimeS)
     arr = dict(Counter(TotalTimelist))
@@ -78,18 +75,11 @@ def BahaviorRecognition(cursor, ChunkSize, vehicle_id, table):
         for NowTime in range(StartTime, EndTime, TimeInterval):
             r = RelationExtractor(cursor, vehicle_id, table)
             r.get_vehicle_relation(NowTime)
-            # r.get_node_relation(NowTime)
-            # r.get_vehicle_node_relation(NowTime)
-            # r.get_vehicle_vehicle_relation(NowTime)
             r.get_vehicle_lane_relation(NowTime)
             r.get_lane_lane_relation()
             InteractionVehicle.update(r.relation_vehicle)
             _,_,velocity = utils.SearchVelocityOnTime(cursor, vehicle_id, NowTime, table)
             VelocityList.append(velocity)
-            # print(r.relation_V2V_list)
-            # print(r.relation_V2N_list)
-            # print(r.relation_V2L_list)
-            # print(r.relation_L2L_list)
             for V2L in r.relation_V2L_list:
                 if V2L[0] == vehicle_id and (len(BehaviorCapture) == 0 or V2L[2] != BehaviorCapture[-1]):
                     BehaviorCapture.append(V2L[2])
@@ -106,14 +96,12 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
                         "values(%s,%s,%s,%s,%s,%s)"
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
     print(len(AllVehicleList))
-    # print(AllVehicleList)
     behavior_interaction_arr = np.zeros((5,11)).astype(np.int)
     all_trajectory_num = 0
     for vehicle in AllVehicleList:
         ChunkNum, TimeSecList, InteractionTemporalList, LaneTemporalList, LaneChangeTimeRecord, AllVelocityList = BahaviorRecognition(cursor, ChunkSize, vehicle, table)
         print(vehicle)
         behavior = ""
-        # print(LaneTemporalList)
         all_trajectory_num = all_trajectory_num + len(TimeSecList)
         for i in range(ChunkNum):
             x = len(LaneTemporalList[i]) - 1
@@ -164,30 +152,6 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
 
 if __name__ == '__main__':
     ChunkSize = 10  # 10s
-    # table = "_8"
-    # ChunkNumStatistic(cursor, ChunkSize, table)
-    # all_time_dur = dict()
-    # for i in range(11):
-    #     table = "_" + str(i)
-    #     temp_dict = TotalTimeStatistic(cursor, table)
-    #     for k, v in temp_dict.items():
-    #         if k not in all_time_dur:
-    #             all_time_dur[k] = v
-    #         else:
-    #             all_time_dur[k] += v
-    #     print(all_time_dur)
-    #
-    # num_type = list()
-    # sum_statistic = list()
-    # for key, value in all_time_dur.items():
-    #     num_type.append(key)
-    #     sum_statistic.append(value)
-    # plt.bar(num_type, sum_statistic)
-    # plt.show()
-    # TotalTimeStatistic(cursor, table)
-    # LaneChangeRecognition(cursor, ChunkSize, 395, table)
-
-
     all_arr = np.zeros((5,11)).astype(np.int)
     for i in range(11):
         print("table: ", i)

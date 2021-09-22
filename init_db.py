@@ -6,6 +6,5 @@ def init_DB(DB):
         user="root",
         passwd="123456",
         db=DB)
-    # 获取游标
     cursor = conn.cursor()
     return cursor

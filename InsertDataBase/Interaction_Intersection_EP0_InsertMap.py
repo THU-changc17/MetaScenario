@@ -15,14 +15,6 @@ conn = pymysql.connect(
 # 获取游标
 cursor = conn.cursor()
 
-# LaneCurve = [[[0.002024, -4.345, 3293], [0.001608, -3.417, 2779]],
-#             [[0.002086, -4.463, 3345], [0.002024, -4.345, 3293]],
-#             [[0.001798, -3.87, 3035], [0.002086, -4.463, 3345]],
-#             [[0.001814, -3.905, 3051], [0.001798, -3.87, 3035]],
-#             [[0.001805, -3.884, 3037], [0.001793, -3.858, 3020]],
-#             [[0.001793, -3.858, 3020], [0.001726, -3.719, 2944]],
-#             [[0.001726, -3.719, 2944], [0.002137, -4.565, 3374]]]
-
 class Point:
     def __init__(self):
         self.x = None
@@ -130,7 +122,6 @@ def get_type(element):
     return type_dict
 
 
-# 对Interaction数据集，专用渠化获取操作方式
 def get_road_channelization(element):
     road_channelization_dict = dict()
     channelization_list = ["pedestrian_marking", "stop_line", "road_border", "guard_rail", "is_intersection"]
@@ -334,13 +325,11 @@ def InsertMapTable():
         point.x, point.y = projector.latlon2xy(float(node.get('lat')), float(node.get('lon')))
         point_dict[int(node.get('id'))] = point
 
-    # 插入节点信息
     insertNodeInfoSql = "insert into Node_Info(node_id,local_x,local_y) " \
                       "values(%s,%s,%s)"
     for node_id,point in point_dict.items():
         cursor.execute(insertNodeInfoSql,(node_id,round(point.x,3),round(point.y,3)))
 
-    # 插入道路信息
     insertWayInfoSql = "insert into Way_Info(way_id,way_type,road_channelization,dynamic_facility,static_facility,l_neighbor_id,r_neighbor_id,predecessor,successor) " \
                         "values(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     insertNodeToWaySql = "insert into Node_To_Way(way_id,node_id) " \
@@ -357,7 +346,7 @@ def InsertMapTable():
                         adjacent_way_dict.get("l_neighbor_id"),
                         adjacent_way_dict.get("r_neighbor_id"), adjacent_way_dict.get("predecessor"),
                         adjacent_way_dict.get("successor")))
-        # 插入道路与节点对应关系
+
         node_list = get_node_lists(way,point_dict)
         for node_id in node_list:
             cursor.execute(insertNodeToWaySql,(int(way.get('id')),node_id))
@@ -382,13 +371,6 @@ if __name__ == '__main__':
     InsertMapTable()
     UpdateLaneWayConnection()
 
-    # FittingLaneCurve(1)
-    # FittingLaneCurve(2)
-    # FittingLaneCurve(3)
-    # FittingLaneCurve(4)
-    # FittingLaneCurve(5)
-    # FittingLaneCurve(6)
-    # FittingLaneCurve(7)
 
     conn.commit()
     cursor.close()

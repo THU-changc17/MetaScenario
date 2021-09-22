@@ -13,7 +13,6 @@ from init_db import init_DB
 # THRESH_LANE_VERY_NEAR = 3
 
 # Interaction Merging Parameter
-# annotation: 5 4 3 2  modify1: 4 3 2 1
 THRESH_NEAR_COLL = 2
 THRESH_VERY_NEAR = 3
 THRESH_NEAR = 4
@@ -65,9 +64,6 @@ class Relations(Enum):
     adjacent_left = 11
     adjacent_right = 12
 
-
-# RELATION_COLORS = ["black", "red", "orange", "yellow", "green", "purple", "blue",
-#                 "sienna", "pink", "turquoise", "violet", "lightblue"]
 
 RELATION_COLORS = ["black", "red", "orange", "yellow", "green", "purple", "blue",
                 "sienna", "pink", "turquoise","violet","lightblue","chocolate"]
@@ -170,7 +166,6 @@ class RelationExtractor:
         if len(self.relation_vehicle) != 0:
             for rel_vehicle in self.relation_vehicle:
                 vehicle_lane = utils.SearchOnWhichLaneFromDB(self.cursor, rel_vehicle, timestamp, self.table)
-                # print(vehicle_lane, rel_vehicle)
                 if vehicle_lane!=None:
                     self.add_car_lane_relation(rel_vehicle, vehicle_lane)
                 if vehicle_lane!=None and vehicle_lane not in self.relation_lane:
@@ -178,7 +173,6 @@ class RelationExtractor:
 
 
     def get_lane_lane_relation(self):
-        # print(self.relation_lane)
         if len(self.relation_lane)!=0:
             for rel_lane in self.relation_lane:
                 l_adj, r_adj = utils.SearchAdjacentLaneFromDB(self.cursor, rel_lane)
@@ -189,7 +183,6 @@ class RelationExtractor:
 
 
     def get_vehicle_node_relation(self, timestamp):
-        # print(self.relation_lane)
         if len(self.relation_vehicle)!=0 and len(self.relation_node)!=0:
             for rel_vehicle in self.relation_vehicle:
                 local_x, local_y, orien = utils.SearchTrafficParticipantTiming(self.cursor, rel_vehicle, timestamp, self.table)
@@ -307,9 +300,6 @@ class RelationExtractor:
         elif min_dist <= THRESH_LANE_VERY_NEAR:
             self.relation_V2N_list.append([subject, Relations.very_near, object])
             self.relation_V2N_list.append([object, Relations.very_near, subject])
-        # elif min_dist <= THRESH_NEAR_COLL:
-        #     self.relation_list.append([subject, Relations.near_coll, object])
-        #     self.relation_list.append([object, Relations.near_coll, subject])
 
         if direction == "front":
             self.relation_V2N_list.append([subject, Relations.front, object])
@@ -341,7 +331,8 @@ class RelationExtractor:
 
 
 if __name__=='__main__':
-    cursor = init_DB("HighD_Scenario_DB")
+    # Test Relation Extractor
+    cursor = init_DB("HighD_I_Scenario_DB")
     table = "_1"
     r = RelationExtractor(cursor, 1, table)
     # timestamp = 315972619604
@@ -356,6 +347,3 @@ if __name__=='__main__':
     print(r.relation_V2N_list)
     print(r.relation_V2L_list)
     print(r.relation_L2L_list)
-    # print(len(r.relation_list))
-    # r.clear_relation()
-    # print(r.relation_list)

@@ -19,7 +19,6 @@ conn = pymysql.connect(
         user="root",
         passwd="123456",
         db="Argoverse_MIA_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 
@@ -50,25 +49,6 @@ def TrajectoryChunk(cursor, vehicle_id, table):
     return timestamp_list
 
 
-def TotalTimeStatistic(cursor, table):
-    AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
-    # print(AllVehicleList)
-    TotalTimelist = list()
-    for vehicle in AllVehicleList:
-        TotalTime = utils.SearchVehicleTotalTime(cursor, vehicle, table)
-        # print(TotalTime)
-        TotalTimeS = TotalTime / 1000
-        TotalTimelist.append(TotalTimeS)
-    arr = dict(Counter(TotalTimelist))
-    num_type = list()
-    sum_statistic = list()
-    for key, value in arr.items():
-        num_type.append(key)
-        sum_statistic.append(value)
-    plt.bar(num_type, sum_statistic)
-    plt.show()
-
-
 def LaneChangeRecognition(cursor, vehicle_id, table):
     timestamplist = TrajectoryChunk(cursor, vehicle_id, table)
     InteractionVehicle = set()
@@ -79,19 +59,12 @@ def LaneChangeRecognition(cursor, vehicle_id, table):
         NowTime = timestamplist[i]
         r = RelationExtractor(cursor, vehicle_id, table)
         r.get_vehicle_relation(NowTime)
-        # r.get_node_relation(NowTime)
-        # r.get_vehicle_node_relation(NowTime)
-        # r.get_vehicle_vehicle_relation(NowTime)
         r.get_vehicle_lane_relation(NowTime)
         r.get_lane_lane_relation()
         InteractionVehicle.update(r.relation_vehicle)
         orientation = utils.SearchOrientationOnTime(cursor, vehicle_id, NowTime, table)
         if orientation != None:
             OrientationList.append(orientation)
-        # print(r.relation_V2V_list)
-        # print(r.relation_V2N_list)
-        # print(r.relation_V2L_list)
-        # print(r.relation_L2L_list)
         for V2L in r.relation_V2L_list:
             if V2L[0]==vehicle_id and (len(LaneChangeCapture) == 0 or V2L[2] != LaneChangeCapture[-1]):
                 LaneChangeCapture.append(V2L[2])
@@ -104,18 +77,11 @@ def LaneChangeStatisticAnnotate(cursor, table):
                                                                      "values(%s,%s,%s,%s,%s,%s)"
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
     print(len(AllVehicleList))
-    # print(AllVehicleList)
     lanechange_interaction_arr = np.zeros((6,11)).astype(np.int)
     all_trajectory_num = 0
-    # f = open('../../Argoverse_Annotation/Argoverse_Data_Annotate' + table + '.csv', 'w', encoding='utf-8', newline='')
-    # csv_writer = csv.writer(f)
-    # csv_writer.writerow(["vehicle_id", "start_time(ms)", "end_time(ms)", "v2v_num", "vehicle_interaction", "behavior"])
     for vehicle in AllVehicleList:
         timestamplist, InteractionTemporalList, LaneTemporalList, LaneChangeTimeList, AllOrientationList = LaneChangeRecognition(cursor,vehicle, table)
         print(vehicle)
-        # print(AllOrientationList)
-        # print(InteractionTemporalList)
-        # print(LaneTemporalList)
         all_trajectory_num = all_trajectory_num + len(InteractionTemporalList)
         x = len(LaneTemporalList) - 1
         y = len(InteractionTemporalList)
@@ -132,7 +98,6 @@ def LaneChangeStatisticAnnotate(cursor, table):
             cursor.execute(insertIndexSql,
                            (vehicle,float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y,
                             json.dumps(list(InteractionTemporalList)), behavior))
-            # csv_writer.writerow([vehicle, float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y,list(InteractionTemporalList), behavior])
             print(lanechange_interaction_arr)
             continue
         for i in range(len(LaneTemporalList) - 1):
@@ -192,7 +157,6 @@ def LaneChangeStatisticAnnotate(cursor, table):
                     dorien = dorien + 2 * math.pi
                 while dorien > math.pi:
                     dorien = dorien - 2 * math.pi
-                # print(dorien)
                 if 0.65 * math.pi / 2 < dorien:
                     lanechange_interaction_arr[3][y] = lanechange_interaction_arr[3][y] + 1
                     turn_flag = 1
@@ -201,27 +165,6 @@ def LaneChangeStatisticAnnotate(cursor, table):
                                    (vehicle, float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y,
                                     json.dumps(list(InteractionTemporalList)), behavior))
                     break
-        # for orien_combine_tuple in list(itertools.combinations(AllOrientationList, 2)):
-        #     orien_1 = float(orien_combine_tuple[0])
-        #     orien_2 = float(orien_combine_tuple[1])
-        #     dorien = orien_2 - orien_1
-        #     while dorien < -math.pi:
-        #         dorien = dorien + 2 * math.pi
-        #     while dorien > math.pi:
-        #         dorien = dorien - 2 * math.pi
-        #     # print(dorien)
-        #     if 0.65 * math.pi /2 < dorien:
-        #         lanechange_interaction_arr[3][y] = lanechange_interaction_arr[3][y] + 1
-        #         turn_flag = 1
-        #         behavior = "turn_left"
-        #         csv_writer.writerow([vehicle, float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y, list(InteractionTemporalList), behavior])
-        #         break
-        #     elif dorien < -0.65 * math.pi /2:
-        #         lanechange_interaction_arr[4][y] = lanechange_interaction_arr[4][y] + 1
-        #         turn_flag = 1
-        #         behavior = "turn_right"
-        #         csv_writer.writerow([vehicle, float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y, list(InteractionTemporalList), behavior])
-        #         break
 
         if lane_change_flag == 0 and turn_flag == 0:
             lanechange_interaction_arr[0][y] = lanechange_interaction_arr[0][y] + 1
@@ -230,7 +173,6 @@ def LaneChangeStatisticAnnotate(cursor, table):
                             json.dumps(list(InteractionTemporalList)), behavior))
 
         print(lanechange_interaction_arr)
-    # f.close()
     return lanechange_interaction_arr
 
 
@@ -243,9 +185,6 @@ if __name__ == '__main__':
         print("table: ", table)
         table = "_" + table
         CreateScenarioBehaviorIndexTable(table)
-    # TotalTimeStatistic(cursor, table)
-    # ChunkNumStatistic(cursor, ChunkSize, table)
-    # LaneChangeRecognition(cursor, ChunkSize, 395, table)
         arr = LaneChangeStatisticAnnotate(cursor, table)
         all_lanechange_interaction_arr = all_lanechange_interaction_arr + arr
         print(all_lanechange_interaction_arr)

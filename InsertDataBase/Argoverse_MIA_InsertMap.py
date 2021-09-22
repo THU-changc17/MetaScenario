@@ -9,7 +9,6 @@ conn = pymysql.connect(
     user="root",
     passwd="123456",
     db="Argoverse_MIA_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 
@@ -17,25 +16,6 @@ class Point:
     def __init__(self):
         self.x = None
         self.y = None
-
-
-# 适用于Interaction数据集的坐标转换器
-class LL2XYProjector:
-    def __init__(self, lat_origin, lon_origin):
-        self.lat_origin = lat_origin
-        self.lon_origin = lon_origin
-        # works for most tiles, and for all in the dataset
-        self.zone = math.floor((lon_origin + 180.) / 6) + 1
-        self.p = pyproj.Proj(
-            proj='utm',
-            ellps='WGS84',
-            zone=self.zone,
-            datum='WGS84')
-        [self.x_origin, self.y_origin] = self.p(lon_origin, lat_origin)
-
-    def latlon2xy(self, lat, lon):
-        [x, y] = self.p(lon, lat)
-        return [x - self.x_origin, y - self.y_origin]
 
 
 def CreateWayInfoTable():
@@ -186,27 +166,22 @@ def get_adjacent_way(element):
 
 
 def InsertMapTable():
-    # lat_origin = 0
-    # lon_origin = 0
-    # projector = LL2XYProjector(lat_origin, lon_origin)
-
     e = xml.parse('../DataSet/Argoverse-Dataset/pruned_argoverse_MIA_10316_vector_map.xml').getroot()
 
     point_dict = dict()
     for node in e.findall("node"):
         point = Point()
-        # point.x, point.y = projector.latlon2xy(float(node.get('lat')), float(node.get('lon')))
         point.x, point.y = float(node.get('x')), float(node.get('y'))
         point_dict[int(node.get('id'))] = point
 
-    # 插入节点信息
+    # insert node information
     insertNodeInfoSql = "insert into Node_Info(node_id,local_x,local_y) " \
                       "values(%s,%s,%s)"
     for node_id,point in point_dict.items():
         cursor.execute(insertNodeInfoSql,(node_id,round(point.x,3),round(point.y,3)))
         print(node_id)
 
-    # 插入道路信息
+    # insert way information
     insertWayInfoSql = "insert into Way_Info(way_id,way_type,road_channelization,dynamic_facility,static_facility,center_line_of,l_neighbor_id,r_neighbor_id,predecessor,successor) " \
                         "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     insertNodeToWaySql = "insert into Node_To_Way(way_id,node_id) " \
@@ -222,7 +197,7 @@ def InsertMapTable():
                                          json.dumps(dynamic_facility_dict),json.dumps(static_facility_dict),str(way.get('lane_id')),adjacent_way_dict.get("l_neighbor_id"),
                                          adjacent_way_dict.get("r_neighbor_id"),adjacent_way_dict.get("predecessor"),adjacent_way_dict.get("successor")))
 
-        # 插入道路与节点对应关系
+        # insert way corresponding to nodes
         node_list = get_node_lists(way,point_dict)
         for node_id in node_list:
             cursor.execute(insertNodeToWaySql,(int(way.get('lane_id')),node_id))

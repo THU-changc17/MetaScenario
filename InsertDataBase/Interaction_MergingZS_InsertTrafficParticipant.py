@@ -55,14 +55,11 @@ def CreateTrafficParticipantPropertyTable(table):
 
 
 def InsertTable(table):
-    # 取前n条数据做样例
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,orientation,lane_id) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
         time_stamp = VehicleInfo[i][2]
-        # print(type(time_stamp))
         vehicle_id = VehicleInfo[i][0]
-        # print(type(vehicle_id))
         local_x = VehicleInfo[i][4]
         local_y = VehicleInfo[i][5]
         lane_id = None
@@ -87,10 +84,8 @@ def InsertTable(table):
     insertPropertySql = "insert into Traffic_participant_property" + table + "(vehicle_id,vehicle_class,vehicle_length,vehicle_width) " \
                 "values(%s,%s,%s,%s) ON DUPLICATE KEY UPDATE vehicle_class = vehicle_class,vehicle_length = vehicle_length,vehicle_width = vehicle_width"
     for i in range(len(VehicleInfo)):
-        # print(type(time_stamp))
         vehicle_id = VehicleInfo[i][0]
         vehicle_type = VehicleInfo[i][3]
-        # print(type(vehicle_type))
         if(vehicle_type == "car"):
             vehicle_class = 1
         else:

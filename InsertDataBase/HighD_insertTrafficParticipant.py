@@ -60,17 +60,14 @@ def CreateTrafficParticipantPropertyTable(table):
 
 
 def InsertTable(table):
-    # 取前n条数据做样例
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,acceleration,orientation,lane_id,preced_vehicle,follow_vehicle) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
-        # HighD数据集01采样频率25Hz
+        # HighD record frequency 25Hz
         time_stamp = int(VehicleInfo[i][0] * 40)
-        # print(type(time_stamp))
         vehicle_id = VehicleInfo[i][1]
-        # print(type(vehicle_id))
         local_x = VehicleInfo[i][2]
-        # HighD坐标系是正常的沿x轴翻转
+        # HighD Coordinate system reverse x-axis
         local_y = y_sign * VehicleInfo[i][3]
         velocity_x = round(VehicleInfo[i][6], 3)
         velocity_y = -1 * round(VehicleInfo[i][7], 3)
@@ -94,10 +91,8 @@ def InsertTable(table):
     insertPropertySql = "insert into Traffic_participant_property" + table + "(vehicle_id,vehicle_class,vehicle_length,vehicle_width) " \
                 "values(%s,%s,%s,%s) ON DUPLICATE KEY UPDATE vehicle_class = vehicle_class,vehicle_length = vehicle_length,vehicle_width = vehicle_width"
     for i in range(len(VehicleMeta)):
-        # print(type(time_stamp))
         vehicle_id = VehicleMeta[i][0]
         vehicle_type = VehicleMeta[i][3]
-        # print(type(vehicle_type))
         if(vehicle_type == "Car"):
             vehicle_class = 1
         elif(vehicle_type == "Truck"):
@@ -114,9 +109,6 @@ if __name__ == '__main__':
     CreateTrafficParticipantPropertyTable(table)
     CreateTrafficTimingStateTable(table)
     InsertTable(table)
-    # sql = "SELECT preced_vehicle FROM Traffic_timing_state WHERE preced_vehicle NOT IN (SELECT vehicle_id FROM Traffic_participant_property)"
-    # cursor.execute(sql)
-    # print(cursor.fetchall())
 
     cursor.close()
     conn.commit()

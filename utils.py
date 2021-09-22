@@ -48,8 +48,6 @@ def cal_polymindist(ego_rotate, other_rotate):
         point_list_other.append(inter30)
     point_list_ego = np.array(point_list_ego)
     point_list_other = np.array(point_list_other)
-    # print(point_list_ego.shape)
-    #     # print(point_list_other.shape)
     return distance.cdist(point_list_ego, point_list_other).min(axis=1).min(axis=0)
 
 
@@ -82,15 +80,11 @@ def min_distance_between_vehicles(ego_location, ego_property, other_location, ot
                                                length = other_property["vehicle_length"])
 
     minDist = cal_polymindist(ego_rotate, other_rotate)
-    # cal_polymindist(ego_rotate,other_rotate)
     same_direction = True
-    # 指示ego车辆的前进方向
-    # if(abs(ego_location[2]) < math.pi / 2):
+    # indicate ego vehicle forward direction
     ego_vector = ego_rotate[1] - ego_rotate[0]
-    # 指示ego车辆的右侧方向
+    # indicate ego vehicle right direction
     ego_side_vector = ego_rotate[1] - ego_rotate[2]
-    # else:
-    #     ego_vector = ego_rotate[0] - ego_rotate[1]
     object_vector = other_rotate[1] - other_rotate[0]
     adjacent_vector = np.array([other_location[0] - ego_location[0], other_location[1] - ego_location[1]])
     Lx = np.sqrt(ego_vector.dot(ego_vector))
@@ -153,14 +147,9 @@ def min_distance_direction_between_car_node(ego_location, ego_property, node_x, 
 
     other = np.array([node_x, node_y])
 
-    # 判断车道控制点是否被车覆盖
-    # if(if_inPoly(ego_rotate, other)):
-    #     return None, None
+
     other = other.reshape(1,-1)
-    # minDist = cal_poly_point_mindist(ego_rotate, other)
-    # 指示ego车辆的前进方向
     ego_vector = ego_rotate[1] - ego_rotate[0]
-    # 指示ego车辆的右侧方向
     ego_side_vector = ego_rotate[1] - ego_rotate[2]
     adjacent_vector = np.array([node_x - ego_location[0], node_y - ego_location[1]])
     Lx = np.sqrt(ego_vector.dot(ego_vector))
@@ -211,43 +200,12 @@ def min_distance_direction_between_car_node_no_shape(ego_location, node_x, node_
     return direction, dist
 
 
-def SearchDBTest(cursor):
-    # sql = "select local_x,local_y from Traffic_timing_state"
-    # cursor.execute(sql)  # 执行sql
-    # for i in cursor.fetchall():
-    #     print(i)
-    #     print(len(i))
-    #     print(type(i[0]))
-    # print('共查询到：', cursor.rowcount, '条数据')
-    # deleteSql = "delete from Traffic_timing_state where vehicle_id = 4"
-    # cursor.execute(deleteSql)
-    # searchSql = 'select vehicle_length from Traffic_participant_property where vehicle_id in (select vehicle_id from Traffic_timing_state where data_id < 100)'
-    # cursor.execute(searchSql)
-    # for i in cursor.fetchall():
-    #     print(i)
-    sql = "select way_id from Way_Info where l_border_of=3"
-    cursor.execute(sql)
-    way_list = list()
-    node_list = list()
-    x_list = list()
-    y_list = list()
-    for i in cursor.fetchall():
-        way_list.append(i[0])
-    for way in way_list:
-        _,temp_x,temp_y = SearchNodeIDOnWayFromDB(cursor, way)
-        x_list = x_list + temp_x
-        y_list = y_list + temp_y
-    print(len(x_list))
-    print(y_list)
-
-
 def SearchTrafficParticipantByTime(cursor, timestamp, table):
     sql = "select vehicle_id from Traffic_timing_state" + table + " where time_stamp = %s" %(timestamp)
     cursor.execute(sql)
     vehicle_list = list()
     for i in cursor.fetchall():
         vehicle_list.append(i[0])
-    # print(vehicle_list)
     return vehicle_list
 
 
@@ -270,7 +228,6 @@ def SearchTrafficParticipantTiming(cursor, vehicleid, timestamp, table):
             orien = float(i[2])
         else:
             orien = 0
-    # print(x,y,orien)
     return x, y,orien
 
 
@@ -297,7 +254,6 @@ def SearchTrafficParticipantProperty(cursor, vehicleid, table):
             vehicle_property["vehicle_width"] = float(i[2])
         else:
             vehicle_property["vehicle_width"] = None
-    # print(vehicle_property)
     return vehicle_property
 
 
@@ -311,18 +267,15 @@ def SearchMap(cursor):
 
 def SearchNodeIDOnWayFromDB(cursor, way_id, x_range=None, y_range=None):
     '''
-    从数据库中查询特定道路上所有节点的位置信息
+     Query the location information of all nodes on a specific way from the database
     :return: node_list, x_list, y_list
     '''
     if(x_range==None):
-        # sql = "select local_x,local_y from Node_Info where node_id in (select node_id from Node_To_Way where way_id = %s)" %(way_id)
         sql = "select Node_Info.node_id, local_x, local_y " \
               "from Node_Info " \
               "join Node_To_Way on Node_Info.node_id = Node_To_Way.node_id " \
               "where way_id = %s"%(way_id)
     else:
-        # sql = "select local_x,local_y from Node_Info where node_id in (select node_id from Node_To_Way where way_id = %s) and local_x BETWEEN %s and %s and local_y BETWEEN %s and %s" \
-        #       %(way_id, x_range[0], x_range[1], y_range[0], y_range[1])
         sql = "select Node_Info.node_id, local_x, local_y " \
               "from Node_Info " \
               "join Node_To_Way on Node_Info.node_id = Node_To_Way.node_id " \
@@ -333,25 +286,17 @@ def SearchNodeIDOnWayFromDB(cursor, way_id, x_range=None, y_range=None):
     x_list = list()
     y_list = list()
     for i in cursor.fetchall():
-        # print(i)
         node_list.append(i[0])
         x_list.append(i[1])
         y_list.append(i[2])
-    # print('共查询到：', cursor.rowcount, '条数据')
-    # print(x_list, y_list)
     return node_list, x_list, y_list
 
 
 def SearchLineThinDashedNodeFromDB(cursor):
     '''
-    从数据库中查询所有交互的节点位置信息
+    Query the possible interaction information of all nodes from the database
     return: node_list, x_list, y_list
     '''
-
-    # sql = '''select node_id,local_x,local_y from Node_Info where node_id in
-    # (select distinct Node_info.node_id from (Node_Info join Node_To_Way on Node_Info.node_id = Node_To_Way.node_id)
-    # join Way_Info on Node_To_Way.way_id = Way_info.way_id
-    # where way_type -> '$.type' = "line_thin")'''
     sql = '''select Node_Info.node_id,local_x,local_y from (Node_Info join Node_To_Way on Node_Info.node_id = Node_To_Way.node_id)
         join Way_Info on Node_To_Way.way_id = Way_Info.way_id
         where way_type -> '$.type' = "line_thin" and way_type -> '$.subtype' = "dashed" group by Node_Info.node_id,local_x,local_y'''
@@ -363,10 +308,6 @@ def SearchLineThinDashedNodeFromDB(cursor):
         node_list.append(i[0])
         x_list.append(float(i[1]))
         y_list.append(float(i[2]))
-    # print(len(node_list))
-    # print(x_list)
-    # print(y_list)
-    # print('共查询到：', cursor.rowcount, '条数据')
     return node_list, x_list, y_list
 
 
@@ -382,16 +323,12 @@ def SearchVirtualNodeFromDB(cursor):
         node_list.append(i[0])
         x_list.append(float(i[1]))
         y_list.append(float(i[2]))
-    # print(len(node_list))
-    # print(x_list)
-    # print(y_list)
-    # print('共查询到：', cursor.rowcount, '条数据')
     return node_list, x_list, y_list
 
 
 def SearchNodeIDFromDB(cursor):
     '''
-    从数据库中查询所有的节点位置信息
+     Query the information of all nodes from the database
     :return: x_list, y_list
     '''
     sql = "select node_id,local_x,local_y from Node_Info"
@@ -403,10 +340,6 @@ def SearchNodeIDFromDB(cursor):
         node_list.append(i[0])
         x_list.append(float(i[1]))
         y_list.append(float(i[2]))
-    # print(node_list)
-    # print(x_list)
-    # print(y_list)
-    # print('共查询到：', cursor.rowcount, '条数据')
     return node_list, x_list, y_list
 
 
@@ -448,7 +381,7 @@ def SearchLinkWayFromDB(cursor):
 
 def SearchNodeLocationFromDB(cursor, node_id):
     '''
-    从数据库中查询指定节点位置信息
+     Query the location information of specific nodes from the database
     :return: local_x, local_y
     '''
 
@@ -459,7 +392,6 @@ def SearchNodeLocationFromDB(cursor, node_id):
     for i in cursor.fetchall():
         local_x = float(i[0])
         local_y = float(i[1])
-    # print('共查询到：', cursor.rowcount, '条数据')
     return local_x, local_y
 
 
@@ -469,7 +401,6 @@ def SearchOnWhichLaneFromDB(cursor, vehicle, timestamp, table):
     laneID = None
     for i in cursor.fetchall():
         laneID = i[0]
-    # print(laneID)
     return laneID
 
 
@@ -481,7 +412,6 @@ def SearchAdjacentLaneFromDB(cursor, lane_id):
     for i in cursor.fetchall():
         l_adj_lane = i[0]
         r_adj_lane = i[1]
-    # print(l_adj_lane, r_adj_lane)
     return l_adj_lane,r_adj_lane
 
 
@@ -497,13 +427,12 @@ def SearchFrontAdjacentLaneFromDB(cursor, way_id):
         for i in cursor.fetchall():
             l_adj_lane = i[0]
             r_adj_lane = i[1]
-    # print(l_adj_lane, r_adj_lane)
     return l_adj_lane,r_adj_lane
 
 
 def SearchLocationRangeFromDB(cursor, table):
     '''
-    从数据库中查询节点位置的边界信息
+     Query the location information of all nodes boundary from the database
     :return: local_x, local_y
     '''
 
@@ -514,12 +443,10 @@ def SearchLocationRangeFromDB(cursor, table):
     min_local_y = None
     max_local_y = None
     for i in cursor.fetchall():
-        # print(i)
         min_local_x = float(i[0])
         max_local_x = float(i[1])
         min_local_y = float(i[2])
         max_local_y = float(i[3])
-    # print('共查询到：', cursor.rowcount, '条数据')
     return min_local_x, max_local_x, min_local_y, max_local_y
 
 
@@ -531,12 +458,10 @@ def SearchVehicleLocationRangeFromDB(cursor, table, vehicle):
     min_local_y = None
     max_local_y = None
     for i in cursor.fetchall():
-        # print(i)
         min_local_x = float(i[0])
         max_local_x = float(i[1])
         min_local_y = float(i[2])
         max_local_y = float(i[3])
-    # print('共查询到：', cursor.rowcount, '条数据')
     return min_local_x, max_local_x, min_local_y, max_local_y
 
 
@@ -548,13 +473,12 @@ def SearchWayTypeFromDB(cursor, way_id):
     for i in cursor.fetchall():
         way_type = i[0]
         way_subtype = i[1]
-    # print(way_type, way_subtype)
     return way_type, way_subtype
 
 
 def SearchWayFromDB(cursor):
     '''
-    从数据库中查询所有的道路信息
+     Query the information of ways from the database
     :return: x_list, y_list
     '''
 
@@ -563,8 +487,6 @@ def SearchWayFromDB(cursor):
     way_list = list()
     for i in cursor.fetchall():
         way_list.append(i[0])
-    # print(way_list)
-    # print('共查询到：', cursor.rowcount, '条数据')
     return way_list
 
 
@@ -581,13 +503,12 @@ def SearchChannelizationOnWayFromDB(cursor, way_id):
         for j in range(len(i)):
             dic = json.loads(i[j])
             Channelization = Merge(Channelization, dic)
-    # print(Channelization)
     return Channelization
 
 
 def SearchVehicleTimeRangeFromDB(cursor, vehicle_id, table):
     '''
-    从数据库中查询节点位置的边界信息
+     Query the time range information of all vehicles from the database
     :return: local_x, local_y
     '''
 
@@ -596,10 +517,8 @@ def SearchVehicleTimeRangeFromDB(cursor, vehicle_id, table):
     min_timestamp = None
     max_timestamp = None
     for i in cursor.fetchall():
-        # print(i)
         min_timestamp = int(i[0])
         max_timestamp = int(i[1])
-    # print('共查询到：', cursor.rowcount, '条数据')
     return min_timestamp, max_timestamp
 
 
@@ -608,9 +527,7 @@ def SearchAllVehicleIDFromDB(cursor, table):
     cursor.execute(sql)
     vehicle_list = list()
     for i in cursor.fetchall():
-        # print(i)
         vehicle_list.append(i[0])
-    # print('共查询到：', cursor.rowcount, '条数据')
     return vehicle_list
 
 
@@ -625,8 +542,6 @@ def SearchVelocityOnTime(cursor, vehicle_id, timestamp, table):
         velocity_y = i[1]
         if velocity_x!=None and velocity_y!=None:
             velocity = np.sqrt(velocity_x * velocity_x + velocity_y * velocity_y)
-    # print('共查询到：', cursor.rowcount, '条数据')
-    # print(velocity_x, velocity_y, velocity)
     return velocity_x, velocity_y, velocity
 
 
@@ -636,7 +551,6 @@ def SearchOrientationOnTime(cursor, vehicle_id, timestamp, table):
     orientation = None
     for i in cursor.fetchall():
         orientation = i[0]
-    # print(velocity_x, velocity_y, velocity)
     return orientation
 
 
@@ -646,18 +560,13 @@ def SearchVehicleTotalTime(cursor, vehicle_id, table):
     min_time = 0
     cursor.execute(sql)
     for i in cursor.fetchall():
-        # print(i)
         max_time = i[0]
         min_time = i[1]
-    # print('共查询到：', cursor.rowcount, '条数据')
-    # print(max_time, min_time)
     return max_time - min_time
 
 
 if __name__ == '__main__':
-    cursor = init_DB("Argoverse_Scenario_DB")
-    channel = SearchChannelizationOnWayFromDB(cursor, 9605253)
-    print(channel.get('turn_direction')==None)
+    cursor = init_DB("Argoverse_MIA_Scenario_DB")
     # SearchDB(cursor)
     # SearchNodeIDOnWayFromDB(cursor, 10000, x_range=[1030,1032],y_range=[960,962])
     # SearchTrafficParticipantByTime(cursor, 9000)

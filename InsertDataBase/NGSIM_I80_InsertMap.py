@@ -9,7 +9,6 @@ conn = pymysql.connect(
     user="root",
     passwd="123456",
     db="NGSIM_I80_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 
@@ -80,47 +79,9 @@ def CreateLaneMetaTable():
     cursor.execute(LaneMetaTable)
 
 
-# ID = "id"
-# FRAME_RATE = "frameRate"
-# LOCATION_ID = "locationId"
-# SPEED_LIMIT = "speedLimit"
-# MONTH = "month"
-# WEEKDAY = "weekDay"
-# START_TIME = "startTime"
-# DURATION = "duration"
-# TOTAL_DRIVEN_DISTANCE = "totalDrivenDistance"
-# TOTAL_DRIVEN_TIME = "totalDrivenTime"
-# N_VEHICLES = "numVehicles"
-# N_CARS = "numCars"
-# N_TRUCKS = "numTrucks"
-# UPPER_LANE_MARKINGS = "upperLaneMarkings"
-# LOWER_LANE_MARKINGS = "lowerLaneMarkings"
-#
-# df = pandas.read_csv("../DataSet/HighD-Dataset/01_recordingMeta.csv")
-#
-# # Declare and initialize the extracted_meta_dictionary
-# extracted_meta_dictionary = {ID: int(df[ID][0]),
-#                              FRAME_RATE: int(df[FRAME_RATE][0]),
-#                              LOCATION_ID: int(df[LOCATION_ID][0]),
-#                              SPEED_LIMIT: float(df[SPEED_LIMIT][0]),
-#                              MONTH: str(df[MONTH][0]),
-#                              WEEKDAY: str(df[WEEKDAY][0]),
-#                              START_TIME: str(df[START_TIME][0]),
-#                              DURATION: float(df[DURATION][0]),
-#                              TOTAL_DRIVEN_DISTANCE: float(df[TOTAL_DRIVEN_DISTANCE][0]),
-#                              TOTAL_DRIVEN_TIME: float(df[TOTAL_DRIVEN_TIME][0]),
-#                              N_VEHICLES: int(df[N_VEHICLES][0]),
-#                              N_CARS: int(df[N_CARS][0]),
-#                              N_TRUCKS: int(df[N_TRUCKS][0]),
-#                              UPPER_LANE_MARKINGS: np.fromstring(df[UPPER_LANE_MARKINGS][0], sep=";"),
-#                              LOWER_LANE_MARKINGS: np.fromstring(df[LOWER_LANE_MARKINGS][0], sep=";")}
-#
-#
-# meta_dictionary = extracted_meta_dictionary
 y_sign = -1
 upper_lanes = np.array([-2, 11.5, 23.5, 35, 48, 60, 75, 90])
 upper_lanes_shape = upper_lanes.shape
-# lower_lanes_shape = lower_lanes.shape
 
 
 class Node:
