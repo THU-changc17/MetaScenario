@@ -8,7 +8,6 @@ conn = pymysql.connect(
     user="root",
     passwd="123456",
     db="HighD_I_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 VehicleInfo = list()

@@ -13,7 +13,6 @@ conn = pymysql.connect(
     user="root",
     passwd="123456",
     db="Interaction_MergingZS_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 LaneCurve = [[[0.002024, -4.345, 3293], [0.001608, -3.417, 2779]],

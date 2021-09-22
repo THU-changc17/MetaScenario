@@ -9,7 +9,6 @@ conn = pymysql.connect(
     user="root",
     passwd="123456",
     db="Interaction_MergingZS_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 VehicleInfo = list()

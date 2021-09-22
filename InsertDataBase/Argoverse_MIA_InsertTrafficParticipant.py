@@ -11,7 +11,6 @@ conn = pymysql.connect(
     user="root",
     passwd="123456",
     db="Argoverse_MIA_Scenario_DB")
-# 获取游标
 cursor = conn.cursor()
 
 

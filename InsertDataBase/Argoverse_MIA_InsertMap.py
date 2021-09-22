@@ -103,7 +103,6 @@ def get_type(element):
     return type_dict
 
 
-# 对Interaction数据集，专用渠化获取操作方式
 def get_road_channelization(element):
     road_channelization_dict = dict()
     channelization_list = ["pedestrian_marking", "stop_line", "road_border", "guard_rail", "is_intersection"]
