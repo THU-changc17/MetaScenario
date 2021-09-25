@@ -5,6 +5,8 @@ import numpy as np
 from shapely import geometry
 import functools
 import matplotlib.pyplot as plt
+from InsertDataBase.CreateTables import *
+
 
 conn = pymysql.connect(
     host='localhost',
@@ -79,39 +81,6 @@ def RearrangeNodePolygon(lane_id):
     return rearrange_node_list
 
 
-def CreateTrafficTimingStateTable(table):
-    cursor.execute('drop table if exists Traffic_timing_state' + table)
-    TrafficTimingStateTable = """CREATE TABLE IF NOT EXISTS `Traffic_timing_state""" + table + """` (
-    	  `data_id` bigint NOT NULL AUTO_INCREMENT,
-    	  `time_stamp` bigint NOT NULL,
-    	  `vehicle_id` bigint NOT NULL,
-    	  `local_x` decimal(11,3),
-    	  `local_y` decimal(11,3),
-    	  `velocity_x` decimal(11,3),
-    	  `velocity_y` decimal(11,3),
-    	  `acceleration` decimal(11,3),
-    	  `orientation` decimal(11,3),
-    	  `lane_id` varchar(32),
-    	  `preced_vehicle` bigint,
-    	  `follow_vehicle` bigint,
-    	  PRIMARY KEY (`data_id`)
-    	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0"""
-    cursor.execute(TrafficTimingStateTable)
-
-
-def CreateTrafficParticipantPropertyTable(table):
-    cursor.execute('drop table if exists Traffic_participant_property' + table)
-    TrafficParticipantPropertyTable = """CREATE TABLE IF NOT EXISTS `Traffic_participant_property""" + table + """` (
-        	  `vehicle_id` bigint NOT NULL,
-        	  `vehicle_class` bigint NOT NULL,
-        	  `vehicle_length` decimal(11,3),
-        	  `vehicle_width` decimal(11,3),
-        	  `vehicle_height` decimal(11,3),
-        	  PRIMARY KEY (`vehicle_id`)
-        	) ENGINE=InnoDB  DEFAULT CHARSET=utf8"""
-    cursor.execute(TrafficParticipantPropertyTable)
-
-
 polygon_1 = RearrangeNodePolygon("1")
 polygon_2 = RearrangeNodePolygon("2")
 polygon_3 = RearrangeNodePolygon("3")
@@ -179,8 +148,8 @@ def InsertTable(table):
 
 
 if __name__ == '__main__':
-    CreateTrafficParticipantPropertyTable(table)
-    CreateTrafficTimingStateTable(table)
+    CreateTrafficParticipantPropertyTable(cursor, table)
+    CreateTrafficTimingStateTable(cursor, table)
     InsertTable(table)
 
     cursor.close()

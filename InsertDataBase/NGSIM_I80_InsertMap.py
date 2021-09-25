@@ -2,6 +2,7 @@ import pandas
 import numpy as np
 import pymysql
 import json
+from InsertDataBase.CreateTables import *
 
 
 conn = pymysql.connect(
@@ -10,73 +11,6 @@ conn = pymysql.connect(
     passwd="123456",
     db="NGSIM_I80_Scenario_DB")
 cursor = conn.cursor()
-
-
-def CreateWayInfoTable():
-    cursor.execute('drop table if exists Way_Info')
-    WayInfoTable = """CREATE TABLE IF NOT EXISTS `Way_Info` (
-        	  `way_id` bigint NOT NULL,
-        	  `way_type` json,
-        	  `road_channelization` json,
-        	  `dynamic_facility` json,
-        	  `static_facility` json,
-        	  `l_border_of` varchar(32),
-        	  `r_border_of` varchar(32),
-        	  `center_line_of` varchar(32),
-        	  `l_neighbor_id` bigint,
-        	  `r_neighbor_id` bigint,
-        	  `predecessor` bigint,
-        	  `successor` bigint,
-        	  PRIMARY KEY (`way_id`)
-        	) ENGINE=InnoDB  DEFAULT CHARSET=utf8"""
-    cursor.execute(WayInfoTable)
-
-
-def CreateAdditionalConditionTable():
-    cursor.execute('drop table if exists Additional_Condition')
-    WayInfoTable = """CREATE TABLE IF NOT EXISTS `Additional_Condition` (
-        	  `weather` varchar(32),
-        	  `lighting` varchar(32),
-        	  `temperature` varchar(32),
-        	  `humidity` varchar(32)
-        	) ENGINE=InnoDB  DEFAULT CHARSET=utf8"""
-    cursor.execute(WayInfoTable)
-
-
-def CreateNodeInfoTable():
-    cursor.execute('drop table if exists Node_Info')
-    NodeInfoTable = """CREATE TABLE IF NOT EXISTS `Node_Info` (
-            	  `node_id` bigint NOT NULL,
-            	  `local_x` decimal(11,3),
-    	          `local_y` decimal(11,3),
-    	          `global_x` decimal(11,3),
-    	          `global_y` decimal(11,3),
-            	  PRIMARY KEY (`node_id`)
-            	) ENGINE=InnoDB  DEFAULT CHARSET=utf8"""
-    cursor.execute(NodeInfoTable)
-
-
-def CreateNodeToWayTable():
-    cursor.execute('drop table if exists Node_To_Way')
-    NodeToWayTable = """CREATE TABLE IF NOT EXISTS `Node_To_Way` (
-                      `id` bigint NOT NULL AUTO_INCREMENT,
-                	  `way_id` bigint NOT NULL,
-                	  `node_id` bigint NOT NULL,
-                	  PRIMARY KEY (`id`)
-                	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0"""
-    cursor.execute(NodeToWayTable)
-
-
-def CreateLaneMetaTable():
-    cursor.execute('drop table if exists Lane_Meta')
-    LaneMetaTable = """CREATE TABLE IF NOT EXISTS `Lane_Meta` (
-                      `lane_id` varchar(32) NOT NULL,
-                	  `lane_property` json,
-                	  `l_adj_lane` varchar(32),
-                	  `r_adj_lane` varchar(32),
-                	  PRIMARY KEY (`lane_id`)
-                	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0"""
-    cursor.execute(LaneMetaTable)
 
 
 y_sign = -1
@@ -154,11 +88,11 @@ if __name__ == '__main__':
                          "values(%s,%s,%s,%s)"
     UpdateWayLeftBorderSql = "Update Way_Info set l_border_of = %s where way_id = %s"
     UpdateWayRightBorderSql = "Update Way_Info set r_border_of = %s where way_id = %s"
-    CreateWayInfoTable()
-    CreateNodeToWayTable()
-    CreateNodeInfoTable()
-    CreateLaneMetaTable()
-    CreateAdditionalConditionTable()
+    CreateWayInfoTable(cursor)
+    CreateNodeToWayTable(cursor)
+    CreateNodeInfoTable(cursor)
+    CreateLaneMetaTable(cursor)
+    CreateAdditionalConditionTable(cursor)
     l_border_dict = {1:0, 2:1, 3:2, 4:3, 5:4, 6:5, 7:6}
     r_border_dict = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7}
     l_adj_lane = {2:1, 3:2, 4:3, 5:4, 6:5 ,7:6}
