@@ -49,7 +49,7 @@ def TrajectoryChunk(cursor, vehicle_id, table):
     return timestamp_list
 
 
-def LaneChangeRecognition(cursor, vehicle_id, table):
+def BehaviorRecognition(cursor, vehicle_id, table):
     timestamplist = TrajectoryChunk(cursor, vehicle_id, table)
     InteractionVehicle = set()
     LaneChangeCapture = list()
@@ -72,12 +72,12 @@ def LaneChangeRecognition(cursor, vehicle_id, table):
     return timestamplist, InteractionVehicle, LaneChangeCapture, LaneChangeTimeRecord, OrientationList
 
 
-def LaneChangeStatisticAnnotate(cursor, table):
+def BehaviorStatisticAnnotate(cursor, table):
     insertIndexSql = "insert into Scenario_Behavior_Index" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
                                                                      "values(%s,%s,%s,%s,%s,%s)"
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
     print(len(AllVehicleList))
-    lanechange_interaction_arr = np.zeros((6,11)).astype(np.int)
+    behavior_interaction_arr = np.zeros((6,11)).astype(np.int)
     all_trajectory_num = 0
     for vehicle in AllVehicleList:
         timestamplist, InteractionTemporalList, LaneTemporalList, LaneChangeTimeList, AllOrientationList = LaneChangeRecognition(cursor,vehicle, table)
@@ -93,12 +93,12 @@ def LaneChangeStatisticAnnotate(cursor, table):
         turn_flag = 0
         min_x, max_x, min_y ,max_y = utils.SearchVehicleLocationRangeFromDB(cursor, table, vehicle)
         if (max_x - min_x) < 10 and (max_y - min_y) < 10:
-            lanechange_interaction_arr[5][y] = lanechange_interaction_arr[5][y] + 1
+            behavior_interaction_arr[5][y] = behavior_interaction_arr[5][y] + 1
             behavior = "stop"
             cursor.execute(insertIndexSql,
                            (vehicle,float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y,
                             json.dumps(list(InteractionTemporalList)), behavior))
-            print(lanechange_interaction_arr)
+            print(behavior_interaction_arr)
             continue
         for i in range(len(LaneTemporalList) - 1):
             past_lane = LaneTemporalList[i]
@@ -107,14 +107,14 @@ def LaneChangeStatisticAnnotate(cursor, table):
             l_adj, r_adj = utils.SearchAdjacentLaneFromDB(cursor, past_lane)
             fl_adj, fr_adj = utils.SearchFrontAdjacentLaneFromDB(cursor, past_lane)
             if l_adj == now_lane or fl_adj == now_lane:
-                lanechange_interaction_arr[1][y] = lanechange_interaction_arr[1][y] + 1
+                behavior_interaction_arr[1][y] = behavior_interaction_arr[1][y] + 1
                 behavior = "left_lane_change"
                 cursor.execute(insertIndexSql,
                                (vehicle, float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y,
                                 json.dumps(list(InteractionTemporalList)), behavior))
                 lane_change_flag = 1
             elif r_adj == now_lane or fr_adj == now_lane:
-                lanechange_interaction_arr[2][y] = lanechange_interaction_arr[2][y] + 1
+                behavior_interaction_arr[2][y] = behavior_interaction_arr[2][y] + 1
                 behavior = "right_lane_change"
                 cursor.execute(insertIndexSql,
                                (vehicle, float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y,
@@ -140,7 +140,7 @@ def LaneChangeStatisticAnnotate(cursor, table):
                 while dorien > math.pi:
                     dorien = dorien - 2 * math.pi
                 if dorien < -0.65 * math.pi /2:
-                    lanechange_interaction_arr[4][y] = lanechange_interaction_arr[4][y] + 1
+                    behavior_interaction_arr[4][y] = behavior_interaction_arr[4][y] + 1
                     turn_flag = 1
                     behavior = "turn_right"
                     cursor.execute(insertIndexSql,
@@ -158,7 +158,7 @@ def LaneChangeStatisticAnnotate(cursor, table):
                 while dorien > math.pi:
                     dorien = dorien - 2 * math.pi
                 if 0.65 * math.pi / 2 < dorien:
-                    lanechange_interaction_arr[3][y] = lanechange_interaction_arr[3][y] + 1
+                    behavior_interaction_arr[3][y] = behavior_interaction_arr[3][y] + 1
                     turn_flag = 1
                     behavior = "turn_left"
                     cursor.execute(insertIndexSql,
@@ -167,17 +167,16 @@ def LaneChangeStatisticAnnotate(cursor, table):
                     break
 
         if lane_change_flag == 0 and turn_flag == 0:
-            lanechange_interaction_arr[0][y] = lanechange_interaction_arr[0][y] + 1
+            behavior_interaction_arr[0][y] = behavior_interaction_arr[0][y] + 1
             cursor.execute(insertIndexSql,
                            (vehicle, float(NowTimeSec[0] / 1000), float(NowTimeSec[1] / 1000), y,
                             json.dumps(list(InteractionTemporalList)), behavior))
 
-        print(lanechange_interaction_arr)
-    return lanechange_interaction_arr
+        print(behavior_interaction_arr)
+    return behavior_interaction_arr
 
 
 if __name__ == '__main__':
-    cursor = init_DB("Argoverse_MIA_Scenario_DB")
     csv_reader = csv.reader(open("../Annotator/sample_record.csv", encoding='utf-8'))
     all_lanechange_interaction_arr = np.zeros((6, 11)).astype(np.int)
     for i, rows in enumerate(csv_reader):
@@ -185,6 +184,10 @@ if __name__ == '__main__':
         print("table: ", table)
         table = "_" + table
         CreateScenarioBehaviorIndexTable(table)
-        arr = LaneChangeStatisticAnnotate(cursor, table)
+        arr = BehaviorStatisticAnnotate(cursor, table)
         all_lanechange_interaction_arr = all_lanechange_interaction_arr + arr
         print(all_lanechange_interaction_arr)
+
+    cursor.close()
+    conn.commit()
+    conn.close()

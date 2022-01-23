@@ -126,9 +126,7 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
     return behavior_interaction_arr
 
 
-
 if __name__ == '__main__':
-    cursor = init_DB("HighD_I_Scenario_DB")
     ChunkSize = 6
     all_arr = np.zeros((3, 11)).astype(np.int)
     for i in range(1, 4):
@@ -138,3 +136,7 @@ if __name__ == '__main__':
         arr = BehaviorStatisticAnnotate(cursor, ChunkSize, table)
         all_arr = all_arr + arr
         print(all_arr)
+
+    cursor.close()
+    conn.commit()
+    conn.close()

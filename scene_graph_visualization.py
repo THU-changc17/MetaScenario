@@ -107,13 +107,13 @@ class SceneGraph:
         ax2.legend(handles=legend_node, bbox_to_anchor=(1.0, 1.0), ncol=4)
 
         plt.axis('off')
-        plt.savefig('../%s_%s.eps' % (self.ego_node, self.timestamp))
+        # plt.savefig('../%s_%s.eps' % (self.ego_node, self.timestamp))
         plt.show()
 
 
 if __name__=='__main__':
-    cursor = init_DB("Interaction_MergingZS_Scenario_DB")
-    Graph = SceneGraph(cursor, 11, 100, "_8")
+    cursor = init_DB("NGSIM_I80_Scenario_DB")
+    Graph = SceneGraph(cursor, 50, 1113433183800, "_1")
     Graph.add_vehicle_vehicle_relation()
     Graph.add_vehicle_node_relation()
     Graph.add_vehicle_lane_relation()

@@ -8,7 +8,7 @@ conn = pymysql.connect(
     host='localhost',
     user="root",
     passwd="123456",
-    db="NGSIM_I80_Scenario_DB")
+    db="NGSIM_I_80_Scenario_DB")
 # 获取游标
 cursor = conn.cursor()
 
@@ -21,7 +21,7 @@ print(VehicleInfo[0])
 VehicleMeta = np.hstack((AllVehicleInfo[:, 0:1].astype(np.int), AllVehicleInfo[:, 8:10].astype(np.float), AllVehicleInfo[:, 10:11].astype(np.int)))
 print(VehicleMeta[0])
 y_sign = -1
-max_vehicle_num = 1757
+max_vehicle_num = 1757# 2911, 2077
 
 
 def InsertTable(table):
@@ -31,11 +31,11 @@ def InsertTable(table):
         # NGSIM record frequency 10Hz
         time_stamp = int(VehicleInfo[i][1])
         vehicle_id = VehicleInfo[i][0]
-        local_x = VehicleInfo[i][3]
+        local_x = VehicleInfo[i][3] * 0.3048
         # NGSIM Coordinate system reverse x-axis
-        local_y = y_sign * VehicleInfo[i][2]
-        velocity_x = round(VehicleInfo[i][4], 3)
-        acceleration = round(VehicleInfo[i][5], 3)
+        local_y = y_sign * VehicleInfo[i][2] * 0.3048
+        velocity_x = round(VehicleInfo[i][4], 3) * 0.3048
+        acceleration = round(VehicleInfo[i][5], 3) * 0.3048
         orientation = 0.0
         if (VehicleInfo[i][7] == 0 or VehicleInfo[i][7] > max_vehicle_num):
             preced_vehicle = None
@@ -55,8 +55,8 @@ def InsertTable(table):
         vehicle_id = VehicleMeta[i][0]
         # 1 - motor, 2 - car, 3 - truck
         vehicle_type = int(VehicleMeta[i][3])
-        vehicle_length = VehicleMeta[i][1]
-        vehicle_width = VehicleMeta[i][2]
+        vehicle_length = VehicleMeta[i][1] * 0.3048
+        vehicle_width = VehicleMeta[i][2] * 0.3048
         cursor.execute(insertPropertySql,(vehicle_id,vehicle_type,vehicle_length,vehicle_width))
         print(i)
 

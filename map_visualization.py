@@ -44,6 +44,8 @@ def draw_map(cursor, axes):
                 type_dict = dict(color="darkgreen", linewidth=1)
         elif way_type == "virtual":
             type_dict = dict(color="black", linewidth=1, dashes=[2, 5])
+        elif way_type == "wall" or way_type == "fence":
+            continue
         else:
             type_dict = dict(color="darkgreen", linewidth=1, dashes=[10, 10])
 
@@ -68,7 +70,7 @@ def draw_map(cursor, axes):
         plt.plot(x_list, y_list, **type_dict)
         for idx in range(len(x_list)):
             plt.plot(x_list[idx], y_list[idx], '.y', markersize=1.)
-            # axes.text(x_list[idx], y_list[idx], way_id , fontsize=5, color="b")
+            # axes.text(x_list[idx], y_list[idx], way_id , fontsize=8, color="b")
 
 
 
@@ -94,6 +96,8 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
                 type_dict = dict(color="darkgreen", linewidth=2)
         elif way_type == "virtual":
             type_dict = dict(color="black", linewidth=1, dashes=[2, 5])
+        elif way_type == "wall" or way_type == "fence":
+            continue
         else:
             type_dict = dict(color="darkgreen", linewidth=1, dashes=[10, 10])
 
@@ -121,12 +125,12 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
 
 
 if __name__ == '__main__':
-    cursor = init_DB("Interaction_MergingZS_Scenario_DB")
+    cursor = init_DB("InD_I_Scenario_DB")
     fig, axes = plt.subplots(1, 1)
     fig.canvas.set_window_title("DatasetMap Visualization")
     draw_map(cursor, axes)
     # draw_map_part(cursor, axes, Xlist=[1000, 1040], Ylist=[950, 1000])
     # draw_map_part(cursor, axes, Xlist=[400,440],Ylist=[1010,1050])
-    fig.set_size_inches(10.8, 10.8)
-    plt.savefig("Merging_Map.eps")
+    fig.set_size_inches(19.2, 10.8)
+    # plt.savefig("Merging_Map.eps")
     plt.show()

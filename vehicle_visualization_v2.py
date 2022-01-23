@@ -47,7 +47,8 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
     vehicle_in_graph = list()
     color_list = ["whitesmoke", "oldlace", "lightgray", "aliceblue"]
 
-    for timestamp in timestamp_list:
+    for index in range(0, len(timestamp_list), 20):
+        timestamp = timestamp_list[index]
         vehicle_list = utils.SearchTrafficParticipantByTime(cursor, timestamp, table)
         for vehicle in vehicle_list:
             property_dict = utils.SearchTrafficParticipantProperty(cursor, vehicle, table)
@@ -60,23 +61,23 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
                     rect = matplotlib.patches.Polygon(
                         polygon_xy_from_motionstate(x, y, orientation, vehicle_width, vehicle_length),
                         closed=True,
-                        # zorder=20,
+                        zorder=20,
                         facecolor=color_list[random.randint(0, 3)],
                         edgecolor="black")
                     axes.add_patch(rect)
                     patch_dict[vehicle] = rect
-                    text_dict[vehicle] = axes.text(x + 1, y + 1, str(vehicle), horizontalalignment='center') #zorder=5)
+                    text_dict[vehicle] = axes.text(x + 1, y + 1, str(vehicle), horizontalalignment='center', zorder=25)
                     vehicle_in_graph.append(vehicle)
                 else:
                     rect = matplotlib.patches.Polygon(
                         polygon_xy_from_motionstate(x, y, orientation, 1, 1),
                         closed=True,
-                        # zorder=20,
+                        zorder=20,
                         facecolor="red",
                         edgecolor="black")
                     axes.add_patch(rect)
                     patch_dict[vehicle] = rect
-                    text_dict[vehicle] = axes.text(x + 1, y + 1, str(vehicle), horizontalalignment='center')# zorder=5)
+                    text_dict[vehicle] = axes.text(x + 1, y + 1, str(vehicle), horizontalalignment='center', zorder=25)
                     vehicle_in_graph.append(vehicle)
             else:
                 if (vehicle_width != None and vehicle_length != None):
@@ -106,7 +107,7 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
             plt.title("Dataset Visualization TimeStamp: %s " % float(int(timestamp) / 1e+3))
         else:
             plt.title("Dataset Visualization Time: %s s" % round(timestamp / 1000, 3))
-        fig.set_size_inches(19.2, 10.8)
+        fig.set_size_inches(10.8, 10.8)
         plt.pause(0.001)
 
     plt.ioff()
@@ -114,7 +115,7 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
 
 
 if __name__=='__main__':
-    # vehicle_visualize("NGSIM_I80_Scenario_DB", "_1", begin=1113433300000, end=1113433400000)
-    # vehicle_visualize("Interaction_MergingZS_Scenario_DB", "_8", begin=0, end=200)
-    vehicle_visualize("Interaction_Intersection_EP0_Scenario_DB", "_1", begin=30000, end=40000)
+    vehicle_visualize("NGSIM_I_80_Scenario_DB", "_1") #, begin=1113433372100, end=1113433375100)
+    # vehicle_visualize("Interaction_MergingZS_Scenario_DB", "_8", begin=10000, end=100000)
+    # vehicle_visualize("InD_I_Scenario_DB", "_1", begin=880000, end=920000)
     # vehicle_visualize("Argoverse_MIA_Scenario_DB", "_64987")

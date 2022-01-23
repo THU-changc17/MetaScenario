@@ -72,7 +72,7 @@ def BehaviorRecognition(cursor, ChunkSize, vehicle_id, table):
 def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
     print(len(AllVehicleList))
-    lanechange_interaction_arr = np.zeros((3,11)).astype(np.int)
+    behavior_interaction_arr = np.zeros((3,11)).astype(np.int)
     all_trajectory_num = 0
     insertIndexSql = "insert into Scenario_Behavior_Index" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
                                                                      "values(%s,%s,%s,%s,%s,%s)"
@@ -96,32 +96,30 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
                 while dorien > math.pi:
                     dorien = dorien - 2 * math.pi
                 if 0.65 * math.pi /2 < dorien:
-                    lanechange_interaction_arr[1][y] = lanechange_interaction_arr[1][y] + 1
+                    behavior_interaction_arr[1][y] = behavior_interaction_arr[1][y] + 1
                     flag = 1
                     behavior = "turn left"
                     break
                 elif dorien < -0.65 * math.pi /2:
-                    lanechange_interaction_arr[2][y] = lanechange_interaction_arr[2][y] + 1
+                    behavior_interaction_arr[2][y] = behavior_interaction_arr[2][y] + 1
                     flag = 1
                     behavior = "turn right"
                     break
             if not flag:
                 behavior = "go straight"
-                lanechange_interaction_arr[0][y] = lanechange_interaction_arr[0][y] + 1
+                behavior_interaction_arr[0][y] = behavior_interaction_arr[0][y] + 1
 
             cursor.execute(insertIndexSql,
                            (vehicle, NowTimeSec[0], NowTimeSec[1], y,
                             json.dumps(list(InteractionTemporalList[i])), behavior))
-        print(lanechange_interaction_arr)
-    return lanechange_interaction_arr
-
+        print(behavior_interaction_arr)
+    return behavior_interaction_arr
 
 
 if __name__ == '__main__':
-    cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
     ChunkSize = 8
     all_arr = np.zeros((3, 11)).astype(np.int)
-    for i in range(11):
+    for i in range(8):
         print("table: ", i)
         table = "_" + str(i)
         CreateScenarioBehaviorIndexTable(table)

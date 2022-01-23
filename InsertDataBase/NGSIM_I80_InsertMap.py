@@ -9,12 +9,12 @@ conn = pymysql.connect(
     host='localhost',
     user="root",
     passwd="123456",
-    db="NGSIM_I80_Scenario_DB")
+    db="NGSIM_I_80_Scenario_DB")
 cursor = conn.cursor()
 
 
 y_sign = -1
-upper_lanes = np.array([-2, 11.5, 23.5, 35, 48, 60, 75, 90])
+upper_lanes = np.array([-2, 11.5, 23.5, 35, 48, 60, 75, 90]) * 0.3048
 upper_lanes_shape = upper_lanes.shape
 
 
@@ -25,7 +25,7 @@ class Node:
         self.y = None
 
 
-node_x_list = list(np.linspace(0, 2000, 100))
+node_x_list = list(np.linspace(0, 2000 * 0.3048, 100))
 node_y_list = list([y_sign * upper_lanes[0]]) * len(node_x_list)
 way_node = list()
 temp_way = list()
@@ -43,7 +43,7 @@ id_sum = id_sum + len(temp_way)
 
 
 for i in range(1, upper_lanes_shape[0] - 1):
-    node_x_list = list(np.linspace(0, 2000, 100))
+    node_x_list = list(np.linspace(0, 2000 * 0.3048, 100))
     node_y_list = list([y_sign * upper_lanes[i]]) * len(node_x_list)
     temp_way = list()
     for j in range(id_sum, len(node_x_list) + id_sum):
@@ -57,7 +57,7 @@ for i in range(1, upper_lanes_shape[0] - 1):
     type_list.append("line_thin;dashed")
 
 
-node_x_list = list(np.linspace(0, 2000, 100))
+node_x_list = list(np.linspace(0, 2000 * 0.3048, 100))
 node_y_list = list([y_sign * upper_lanes[-1]]) * len(node_x_list)
 temp_way = list()
 for i in range(id_sum, len(node_x_list) + id_sum):

@@ -181,6 +181,8 @@ def FittingLaneCurve(lane_id):
     left_z = np.polyfit(left_node_x, left_node_y, 2)
     left_p = np.poly1d(left_z)
     y_pred_left = left_p(left_node_x)
+    plot1 = pylab.plot(left_node_x, left_node_y, '*', label='original values')
+    plot2 = pylab.plot(left_node_x, y_pred_left, 'r', label='fit values')
     print(lane_id, "left_border: ", left_p)
 
 
@@ -204,7 +206,10 @@ def FittingLaneCurve(lane_id):
     right_z = np.polyfit(right_node_x, right_node_y, 2)
     right_p = np.poly1d(right_z)
     y_pred_right = right_p(right_node_x)
+    plot1 = pylab.plot(right_node_x, right_node_y, 'o', label='original values')
+    plot2 = pylab.plot(right_node_x, y_pred_right, 'y', label='fit values')
     print(lane_id, "right_border: ", right_p)
+    pylab.show()
     return left_node_x, left_node_y, y_pred_left, right_node_x, right_node_y, y_pred_right
 
 
@@ -245,7 +250,7 @@ def InsertMapTable():
 
         node_list = get_node_lists(way,point_dict)
         for node_id in node_list:
-            cursor.execute(insertNodeToWaySql,(int(way.get('id')),node_id))
+            cursor.execute(insertNodeToWaySql,(int(way.get('id')), node_id))
         print(int(way.get('id')))
 
     insertLaneMetaSql = "insert into Lane_Meta(lane_id,lane_property,l_adj_lane,r_adj_lane) " \
@@ -259,21 +264,21 @@ def InsertMapTable():
 
 
 if __name__ == '__main__':
-    CreateNodeInfoTable(cursor)
-    CreateWayInfoTable(cursor)
-    CreateNodeToWayTable(cursor)
-    CreateLaneMetaTable(cursor)
-    CreateAdditionalConditionTable(cursor)
-    InsertMapTable()
-    UpdateLaneWayConnection()
+    # CreateNodeInfoTable(cursor)
+    # CreateWayInfoTable(cursor)
+    # CreateNodeToWayTable(cursor)
+    # CreateLaneMetaTable(cursor)
+    # CreateAdditionalConditionTable(cursor)
+    # InsertMapTable()
+    # UpdateLaneWayConnection()
 
-    # FittingLaneCurve(1)
-    # FittingLaneCurve(2)
-    # FittingLaneCurve(3)
-    # FittingLaneCurve(4)
-    # FittingLaneCurve(5)
-    # FittingLaneCurve(6)
-    # FittingLaneCurve(7)
+    FittingLaneCurve(1)
+    FittingLaneCurve(2)
+    FittingLaneCurve(3)
+    FittingLaneCurve(4)
+    FittingLaneCurve(5)
+    FittingLaneCurve(6)
+    FittingLaneCurve(7)
 
     cursor.close()
     conn.commit()

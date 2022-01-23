@@ -16,7 +16,7 @@ conn = pymysql.connect(
         host='localhost',
         user="root",
         passwd="123456",
-        db="NGSIM_I80_Scenario_DB")
+        db="NGSIM_I_80_Scenario_DB")
 cursor = conn.cursor()
 
 
@@ -133,7 +133,7 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
 if __name__ == '__main__':
     ChunkSize = 10
     all_arr = np.zeros((4, 11)).astype(np.int)
-    for i in range(1,4):
+    for i in range(1, 4):
         print("table: ", i)
         table = "_" + str(i)
         CreateScenarioBehaviorIndexTable(table)
