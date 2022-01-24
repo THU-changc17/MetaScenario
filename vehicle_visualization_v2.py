@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from map_visualization import draw_map,draw_map_part
 import random
-import utils
-from init_db import init_DB
+import DBtools.utils as utils
+from DBtools.init_db import init_DB
 import time
 
 def rotate_around_center(pts, center, yaw):
@@ -20,7 +20,7 @@ def polygon_xy_from_motionstate(x, y, psi_rad, width, length):
 
 
 def vehicle_visualize(DB, TableID, begin=None, end=None):
-    cursor = init_DB(DB)
+    conn, cursor = init_DB(DB)
     table = TableID
     if(begin==None):
         stampsql = "select time_stamp from Traffic_timing_state" + table

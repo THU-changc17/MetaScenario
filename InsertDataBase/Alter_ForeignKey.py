@@ -1,14 +1,8 @@
 import pymysql
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="NGSIM_I80_Scenario_DB")
-cursor = conn.cursor()
+from DBtools.init_db import init_DB
 
 
-def AlterMapForegnKey():
+def AlterMapForegnKey(cursor):
     AlterForeignKey = 'ALTER TABLE Node_To_Way ADD FOREIGN KEY (way_id) REFERENCES Way_Info(way_id)'
     cursor.execute(AlterForeignKey)
     AlterForeignKey = 'ALTER TABLE Node_To_Way ADD FOREIGN KEY (node_id) REFERENCES Node_Info(node_id)'
@@ -22,7 +16,7 @@ def AlterMapForegnKey():
     cursor.execute(AlterForeignKey)
 
 
-def AlterParticipantForegnKey(table):
+def AlterParticipantForegnKey(cursor, table):
     AlterForeignKey = 'ALTER TABLE Traffic_timing_state' + table + ' ADD FOREIGN KEY (vehicle_id) REFERENCES Traffic_participant_property' + table + '(vehicle_id)'
     cursor.execute(AlterForeignKey)
     AlterForeignKey = 'ALTER TABLE Traffic_timing_state' + table + ' ADD FOREIGN KEY (preced_vehicle) REFERENCES Traffic_participant_property' + table + '(vehicle_id)'
@@ -35,7 +29,9 @@ def AlterParticipantForegnKey(table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("NGSIM_I_80_Scenario_DB")
     table = "_3"
+    print(table)
     # AlterMapForegnKey()
     # AlterParticipantForegnKey(table)
     cursor.close()

@@ -4,13 +4,7 @@ import pyproj
 import xml.etree.ElementTree as xml
 import json
 from InsertDataBase.CreateTables import *
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="Argoverse_MIA_Scenario_DB")
-cursor = conn.cursor()
+from DBtools.init_db import init_DB
 
 
 class Point:
@@ -98,7 +92,7 @@ def get_adjacent_way(element):
     return adjacent_way_dict
 
 
-def InsertMapTable():
+def InsertMapTable(cursor):
     e = xml.parse('../DataSet/Argoverse-Dataset/pruned_argoverse_MIA_10316_vector_map.xml').getroot()
 
     point_dict = dict()
@@ -139,12 +133,13 @@ def InsertMapTable():
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("Argoverse_MIA_Scenario_DB")
     CreateNodeInfoTable(cursor)
     CreateWayInfoTable(cursor)
     CreateNodeToWayTable(cursor)
     CreateLaneMetaTable(cursor)
     CreateAdditionalConditionTable(cursor)
-    InsertMapTable()
+    InsertMapTable(cursor)
 
     cursor.close()
     conn.commit()

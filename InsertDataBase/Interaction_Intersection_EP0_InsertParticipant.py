@@ -6,14 +6,8 @@ from shapely import geometry
 import functools
 import matplotlib.pyplot as plt
 from InsertDataBase.CreateTables import *
+from DBtools.init_db import init_DB
 
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="Interaction_Intersection_EP0_Scenario_DB")
-cursor = conn.cursor()
 
 VehicleInfo = list()
 table = "_7"
@@ -114,7 +108,7 @@ polygon_dict = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6', 6: '7',
                 18: 'CA5_9', 19: 'CA6_7', 20: 'CA10_11'}
 
 
-def InsertTable(table):
+def InsertTable(cursor, table):
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,orientation,lane_id) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
@@ -148,9 +142,10 @@ def InsertTable(table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
     CreateTrafficParticipantPropertyTable(cursor, table)
     CreateTrafficTimingStateTable(cursor, table)
-    InsertTable(table)
+    InsertTable(cursor, table)
 
     cursor.close()
     conn.commit()

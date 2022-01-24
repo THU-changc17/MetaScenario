@@ -4,13 +4,7 @@ import pandas as pd
 import numpy as np
 from InsertDataBase.Interaction_MergingZS_InsertMap import LaneCurve
 from InsertDataBase.CreateTables import *
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="Interaction_MergingZS_Scenario_DB")
-cursor = conn.cursor()
+from DBtools.init_db import init_DB
 
 VehicleInfo = list()
 table = "_10"
@@ -64,9 +58,10 @@ def InsertTable(table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
     CreateTrafficParticipantPropertyTable(cursor, table)
     CreateTrafficTimingStateTable(cursor, table)
-    InsertTable(table)
+    InsertTable(cursor, table)
 
     cursor.close()
     conn.commit()

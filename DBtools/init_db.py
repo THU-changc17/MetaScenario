@@ -7,4 +7,4 @@ def init_DB(DB):
         passwd="123456",
         db=DB)
     cursor = conn.cursor()
-    return cursor
+    return conn, cursor

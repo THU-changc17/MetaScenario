@@ -2,7 +2,7 @@ import json
 import numpy as np
 from scipy.spatial import distance
 from shapely import geometry
-from init_db import init_DB
+from DBtools.init_db import init_DB
 from collections import Counter
 
 
@@ -566,7 +566,7 @@ def SearchVehicleTotalTime(cursor, vehicle_id, table):
 
 
 if __name__ == '__main__':
-    cursor = init_DB("Argoverse_MIA_Scenario_DB")
+    conn, cursor = init_DB("Argoverse_MIA_Scenario_DB")
     # SearchDB(cursor)
     # SearchNodeIDOnWayFromDB(cursor, 10000, x_range=[1030,1032],y_range=[960,962])
     # SearchTrafficParticipantByTime(cursor, 9000)

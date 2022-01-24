@@ -1,8 +1,8 @@
 import matplotlib
 import matplotlib.axes
 import matplotlib.pyplot as plt
-import utils
-from init_db import init_DB
+import DBtools.utils as utils
+from DBtools.init_db import init_DB
 
 
 def set_visible_area(x_list, y_list, axes):
@@ -125,7 +125,7 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
 
 
 if __name__ == '__main__':
-    cursor = init_DB("InD_I_Scenario_DB")
+    conn, cursor = init_DB("InD_I_Scenario_DB")
     fig, axes = plt.subplots(1, 1)
     fig.canvas.set_window_title("DatasetMap Visualization")
     draw_map(cursor, axes)

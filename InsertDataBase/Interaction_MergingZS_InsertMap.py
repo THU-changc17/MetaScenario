@@ -8,14 +8,7 @@ import json
 import pylab
 import matplotlib.pyplot as plt
 from InsertDataBase.CreateTables import *
-
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="Interaction_MergingZS_Scenario_DB")
-cursor = conn.cursor()
+from DBtools.init_db import init_DB
 
 
 LaneCurve = [[[0.002024, -4.345, 3293], [0.001608, -3.417, 2779]],
@@ -213,7 +206,7 @@ def FittingLaneCurve(lane_id):
     return left_node_x, left_node_y, y_pred_left, right_node_x, right_node_y, y_pred_right
 
 
-def InsertMapTable():
+def InsertMapTable(cursor):
     lat_origin = 0
     lon_origin = 0
     projector = LL2XYProjector(lat_origin, lon_origin)
@@ -264,13 +257,14 @@ def InsertMapTable():
 
 
 if __name__ == '__main__':
-    # CreateNodeInfoTable(cursor)
-    # CreateWayInfoTable(cursor)
-    # CreateNodeToWayTable(cursor)
-    # CreateLaneMetaTable(cursor)
-    # CreateAdditionalConditionTable(cursor)
-    # InsertMapTable()
-    # UpdateLaneWayConnection()
+    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
+    CreateNodeInfoTable(cursor)
+    CreateWayInfoTable(cursor)
+    CreateNodeToWayTable(cursor)
+    CreateLaneMetaTable(cursor)
+    CreateAdditionalConditionTable(cursor)
+    InsertMapTable(cursor)
+    UpdateLaneWayConnection()
 
     FittingLaneCurve(1)
     FittingLaneCurve(2)

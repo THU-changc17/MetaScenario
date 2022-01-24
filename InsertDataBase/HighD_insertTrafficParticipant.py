@@ -3,13 +3,8 @@ import math
 import pandas as pd
 import numpy as np
 from InsertDataBase.CreateTables import *
+from DBtools.init_db import init_DB
 
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="HighD_I_Scenario_DB")
-cursor = conn.cursor()
 
 VehicleInfo = list()
 table = "_3"
@@ -26,7 +21,7 @@ print(VehicleMeta[0])
 y_sign = -1
 
 
-def InsertTable(table):
+def InsertTable(cursor, table):
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,acceleration,orientation,lane_id,preced_vehicle,follow_vehicle) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
@@ -73,9 +68,10 @@ def InsertTable(table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("HighD_I_Scenario_DB")
     CreateTrafficParticipantPropertyTable(cursor, table)
     CreateTrafficTimingStateTable(cursor, table)
-    InsertTable(table)
+    InsertTable(cursor, table)
 
     cursor.close()
     conn.commit()

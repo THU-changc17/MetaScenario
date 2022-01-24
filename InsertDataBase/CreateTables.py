@@ -98,3 +98,18 @@ def CreateTrafficParticipantPropertyTable(cursor, table):
         	  PRIMARY KEY (`vehicle_id`)
         	) ENGINE=InnoDB  DEFAULT CHARSET=utf8"""
     cursor.execute(TrafficParticipantPropertyTable)
+
+
+def CreateScenarioBehaviorIndexTable(cursor, table):
+    cursor.execute('drop table if exists Scenario_Behavior_Index' + table)
+    ScenarioBehaviorIndexTable = """CREATE TABLE IF NOT EXISTS `Scenario_Behavior_Index""" + table + """` (
+              `data_id` bigint NOT NULL AUTO_INCREMENT,
+        	  `ego_vehicle` bigint NOT NULL,
+        	  `time_stamp_begin` bigint NOT NULL,
+        	  `time_stamp_end` bigint NOT NULL,
+        	  `v2v_interaction_count` bigint,
+        	  `v2v_interaction_id` json,
+        	  `behavior` varchar(32),
+        	  PRIMARY KEY (`data_id`)
+        	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0"""
+    cursor.execute(ScenarioBehaviorIndexTable)

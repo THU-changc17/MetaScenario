@@ -1,8 +1,8 @@
 import matplotlib
 import matplotlib.axes
 import matplotlib.pyplot as plt
-import utils
-from init_db import init_DB
+import DBtools.utils as utils
+from DBtools.init_db import init_DB
 import numpy as np
 
 def set_visible_area(x_list, y_list, axes):
@@ -141,7 +141,7 @@ def draw_vehicle_and_trajectory(cursor, axes, ego, timestamp, interval, table):
 
 
 if __name__ == '__main__':
-    cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
+    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
     fig, axes = plt.subplots(1, 1)
     axes.set_xticks([])
     axes.set_yticks([])

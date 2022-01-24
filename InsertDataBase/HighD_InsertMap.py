@@ -3,15 +3,7 @@ import numpy as np
 import pymysql
 import json
 from InsertDataBase.CreateTables import *
-
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="HighD_I_Scenario_DB")
-cursor = conn.cursor()
-
+from DBtools.init_db import init_DB
 
 ID = "id"
 FRAME_RATE = "frameRate"
@@ -160,6 +152,7 @@ for i in range(len(way_node)):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("HighD_I_Scenario_DB")
     insertNodeInfoSql = "insert into Node_Info(node_id,local_x,local_y) " \
                           "values(%s,%s,%s)"
     insertWayInfoSql = "insert into Way_Info(way_id,way_type,road_channelization,l_neighbor_id,r_neighbor_id) " \

@@ -7,13 +7,8 @@ import xml.etree.ElementTree as xml
 import json
 import pylab
 from InsertDataBase.CreateTables import *
+from DBtools.init_db import init_DB
 
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="Interaction_Intersection_EP0_Scenario_DB")
-cursor = conn.cursor()
 
 class Point:
     def __init__(self):
@@ -245,7 +240,7 @@ def UpdateLaneWayConnection():
     update_lane_border(border_CA10_11_2, None, 'CA10_11')
 
 
-def InsertMapTable():
+def InsertMapTable(cursor):
     lat_origin = 0
     lon_origin = 0
     projector = LL2XYProjector(lat_origin, lon_origin)
@@ -296,12 +291,13 @@ def InsertMapTable():
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
     CreateNodeInfoTable(cursor)
     CreateWayInfoTable(cursor)
     CreateNodeToWayTable(cursor)
     CreateLaneMetaTable(cursor)
     CreateAdditionalConditionTable(cursor)
-    InsertMapTable()
+    InsertMapTable(cursor)
     UpdateLaneWayConnection()
 
 

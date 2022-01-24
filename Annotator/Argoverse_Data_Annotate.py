@@ -1,10 +1,11 @@
-from init_db import init_DB
-import utils
+from DBtools.init_db import init_DB
+import DBtools.utils as utils
 import math
 from collections import Counter
 import matplotlib.pyplot as plt
 from relation_extractor import RelationExtractor
 from scene_graph_visualization import SceneGraph
+from InsertDataBase.CreateTables import CreateScenarioBehaviorIndexTable
 import numpy as np
 import pandas as pd
 import csv
@@ -12,29 +13,6 @@ import seaborn as sns
 import pymysql
 import json
 import itertools
-
-
-conn = pymysql.connect(
-        host='localhost',
-        user="root",
-        passwd="123456",
-        db="Argoverse_MIA_Scenario_DB")
-cursor = conn.cursor()
-
-
-def CreateScenarioBehaviorIndexTable(table):
-    cursor.execute('drop table if exists Scenario_Behavior_Index' + table)
-    ScenarioBehaviorIndexTable = """CREATE TABLE IF NOT EXISTS `Scenario_Behavior_Index""" + table + """` (
-              `data_id` bigint NOT NULL AUTO_INCREMENT,
-        	  `ego_vehicle` bigint NOT NULL,
-        	  `time_stamp_begin` bigint NOT NULL,
-        	  `time_stamp_end` bigint NOT NULL,
-        	  `v2v_interaction_count` bigint,
-        	  `v2v_interaction_id` json,
-        	  `behavior` varchar(32),
-        	  PRIMARY KEY (`data_id`)
-        	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0"""
-    cursor.execute(ScenarioBehaviorIndexTable)
 
 
 def TrajectoryChunk(cursor, vehicle_id, table):
@@ -80,7 +58,7 @@ def BehaviorStatisticAnnotate(cursor, table):
     behavior_interaction_arr = np.zeros((6,11)).astype(np.int)
     all_trajectory_num = 0
     for vehicle in AllVehicleList:
-        timestamplist, InteractionTemporalList, LaneTemporalList, LaneChangeTimeList, AllOrientationList = LaneChangeRecognition(cursor,vehicle, table)
+        timestamplist, InteractionTemporalList, LaneTemporalList, LaneChangeTimeList, AllOrientationList = BehaviorRecognition(cursor,vehicle, table)
         print(vehicle)
         all_trajectory_num = all_trajectory_num + len(InteractionTemporalList)
         x = len(LaneTemporalList) - 1
@@ -177,13 +155,14 @@ def BehaviorStatisticAnnotate(cursor, table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("Argoverse_MIA_Scenario_DB")
     csv_reader = csv.reader(open("../Annotator/sample_record.csv", encoding='utf-8'))
     all_lanechange_interaction_arr = np.zeros((6, 11)).astype(np.int)
     for i, rows in enumerate(csv_reader):
         table = str(rows[0])
         print("table: ", table)
         table = "_" + table
-        CreateScenarioBehaviorIndexTable(table)
+        CreateScenarioBehaviorIndexTable(cursor, table)
         arr = BehaviorStatisticAnnotate(cursor, table)
         all_lanechange_interaction_arr = all_lanechange_interaction_arr + arr
         print(all_lanechange_interaction_arr)

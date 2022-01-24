@@ -1,7 +1,7 @@
 from enum import Enum
-import utils
+import DBtools.utils as utils
 import itertools
-from init_db import init_DB
+from DBtools.init_db import init_DB
 
 # HighD HighWay Parameter
 # THRESH_NEAR_COLL = 2
@@ -341,7 +341,7 @@ class RelationExtractor:
 
 if __name__=='__main__':
     # Test Relation Extractor
-    cursor = init_DB("HighD_I_Scenario_DB")
+    conn, cursor = init_DB("HighD_I_Scenario_DB")
     table = "_1"
     r = RelationExtractor(cursor, 1, table)
     # timestamp = 315972619604

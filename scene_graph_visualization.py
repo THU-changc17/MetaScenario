@@ -4,7 +4,7 @@ import matplotlib.lines as mlines
 import networkx as nx
 from relation_extractor import Relations, RelationExtractor, RELATION_COLORS, NODE_NTYPE, NODE_COLORS
 from enum import Enum
-from init_db import init_DB
+from DBtools.init_db import init_DB
 
 
 class NodeType(Enum):
@@ -112,7 +112,7 @@ class SceneGraph:
 
 
 if __name__=='__main__':
-    cursor = init_DB("NGSIM_I80_Scenario_DB")
+    conn, cursor = init_DB("NGSIM_I80_Scenario_DB")
     Graph = SceneGraph(cursor, 50, 1113433183800, "_1")
     Graph.add_vehicle_vehicle_relation()
     Graph.add_vehicle_node_relation()

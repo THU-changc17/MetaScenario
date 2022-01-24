@@ -1,10 +1,12 @@
-from init_db import init_DB
-import utils
+from sympy import im
+from DBtools.init_db import init_DB
+import DBtools.utils as utils
 import math
 from collections import Counter
 import matplotlib.pyplot as plt
 from relation_extractor import RelationExtractor
 from scene_graph_visualization import SceneGraph
+from InsertDataBase.CreateTables import CreateScenarioBehaviorIndexTable
 import numpy as np
 import pandas as pd
 import csv
@@ -12,28 +14,6 @@ import seaborn as sns
 import itertools
 import pymysql
 import json
-
-conn = pymysql.connect(
-        host='localhost',
-        user="root",
-        passwd="123456",
-        db="Interaction_Intersection_EP0_Scenario_DB")
-cursor = conn.cursor()
-
-
-def CreateScenarioBehaviorIndexTable(table):
-    cursor.execute('drop table if exists Scenario_Behavior_Index' + table)
-    ScenarioBehaviorIndexTable = """CREATE TABLE IF NOT EXISTS `Scenario_Behavior_Index""" + table + """` (
-              `data_id` bigint NOT NULL AUTO_INCREMENT,
-        	  `ego_vehicle` bigint NOT NULL,
-        	  `time_stamp_begin` bigint NOT NULL,
-        	  `time_stamp_end` bigint NOT NULL,
-        	  `v2v_interaction_count` bigint,
-        	  `v2v_interaction_id` json,
-        	  `behavior` varchar(32),
-        	  PRIMARY KEY (`data_id`)
-        	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0"""
-    cursor.execute(ScenarioBehaviorIndexTable)
 
 
 def TrajectoryChunk(cursor, ChunkSize, vehicle_id, table):
@@ -117,12 +97,13 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
     ChunkSize = 8
     all_arr = np.zeros((3, 11)).astype(np.int)
     for i in range(8):
         print("table: ", i)
         table = "_" + str(i)
-        CreateScenarioBehaviorIndexTable(table)
+        CreateScenarioBehaviorIndexTable(cursor, table)
         arr = BehaviorStatisticAnnotate(cursor, ChunkSize, table)
         all_arr = all_arr + arr
         print(all_arr)

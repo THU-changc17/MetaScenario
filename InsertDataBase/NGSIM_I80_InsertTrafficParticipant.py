@@ -3,14 +3,8 @@ import math
 import pandas as pd
 import numpy as np
 from InsertDataBase.CreateTables import *
+from DBtools.init_db import init_DB
 
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="NGSIM_I_80_Scenario_DB")
-# 获取游标
-cursor = conn.cursor()
 
 table = "_3"
 file = "../DataSet/NGSIM-Dataset/I-80-trajectory-data/trajectories-0515-0530.csv"
@@ -24,7 +18,7 @@ y_sign = -1
 max_vehicle_num = 1757# 2911, 2077
 
 
-def InsertTable(table):
+def InsertTable(cursor, table):
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,acceleration,orientation,lane_id,preced_vehicle,follow_vehicle) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
@@ -53,7 +47,6 @@ def InsertTable(table):
                 "values(%s,%s,%s,%s) ON DUPLICATE KEY UPDATE vehicle_class = vehicle_class,vehicle_length = vehicle_length,vehicle_width = vehicle_width"
     for i in range(len(VehicleMeta)):
         vehicle_id = VehicleMeta[i][0]
-        # 1 - motor, 2 - car, 3 - truck
         vehicle_type = int(VehicleMeta[i][3])
         vehicle_length = VehicleMeta[i][1] * 0.3048
         vehicle_width = VehicleMeta[i][2] * 0.3048
@@ -62,9 +55,10 @@ def InsertTable(table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("NGSIM_I_80_Scenario_DB")
     CreateTrafficParticipantPropertyTable(cursor, table)
     CreateTrafficTimingStateTable(cursor, table)
-    InsertTable(table)
+    InsertTable(cursor, table)
 
     cursor.close()
     conn.commit()

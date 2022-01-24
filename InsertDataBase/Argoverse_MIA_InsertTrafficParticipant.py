@@ -5,14 +5,7 @@ import numpy as np
 from scipy.spatial import distance
 import csv
 from InsertDataBase.CreateTables import *
-
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="Argoverse_MIA_Scenario_DB")
-cursor = conn.cursor()
+from DBtools.init_db import init_DB
 
 
 def GetMinDistanceLane(local_x, local_y):
@@ -59,7 +52,7 @@ def GetMinDistanceLane(local_x, local_y):
     return lane
 
 
-def InsertTable(VehicleInfo, table):
+def InsertTable(cursor, VehicleInfo, table):
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,orientation,lane_id) " \
                 "values(%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
@@ -138,6 +131,7 @@ def InsertTable(VehicleInfo, table):
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("Argoverse_MIA_Scenario_DB")
     csv_reader = csv.reader(open("../Annotator/sample_record.csv", encoding='utf-8'))
     for i, rows in enumerate(csv_reader):
         table = str(rows[0])
@@ -149,7 +143,7 @@ if __name__ == '__main__':
         table = "_" + table
         CreateTrafficParticipantPropertyTable(cursor, table)
         CreateTrafficTimingStateTable(cursor, table)
-        InsertTable(VehicleInfo, table)
+        InsertTable(cursor, VehicleInfo, table)
 
     cursor.close()
     conn.commit()

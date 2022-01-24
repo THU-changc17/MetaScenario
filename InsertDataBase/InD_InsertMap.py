@@ -5,13 +5,7 @@ from pyproj import Transformer
 import xml.etree.ElementTree as xml
 import json
 from InsertDataBase.CreateTables import *
-
-conn = pymysql.connect(
-    host='localhost',
-    user="root",
-    passwd="123456",
-    db="InD_I_Scenario_DB")
-cursor = conn.cursor()
+from DBtools.init_db import init_DB
 
 
 class Point:
@@ -116,7 +110,7 @@ def get_adjacent_way(element):
     return adjacent_way_dict
 
 
-def InsertMapTable():
+def InsertMapTable(cursor):
     # lat_origin = 50.78207
     # lon_origin = 6.07116
     # projector = LL2XYProjector(lat_origin, lon_origin)
@@ -167,12 +161,13 @@ def InsertMapTable():
 
 
 if __name__ == '__main__':
+    conn, cursor = init_DB("InD_I_Scenario_DB")
     CreateNodeInfoTable(cursor)
     CreateWayInfoTable(cursor)
     CreateNodeToWayTable(cursor)
     CreateLaneMetaTable(cursor)
     CreateAdditionalConditionTable(cursor)
-    InsertMapTable()
+    InsertMapTable(cursor)
 
     cursor.close()
     conn.commit()
