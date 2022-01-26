@@ -259,10 +259,10 @@ def SearchTrafficParticipantProperty(cursor, vehicleid, table):
 
 def SearchMap(cursor):
     sql = """select node_id from Node_To_Way where way_id in (select way_id from Way_Info where way_type -> '$.type' = "line_thin")"""
-    cursor.execute(sql)  # 执行sql
+    cursor.execute(sql)
     for i in cursor.fetchall():
         print(i)
-    print('共查询到：', cursor.rowcount, '条数据')
+    print(cursor.rowcount)
 
 
 def SearchNodeIDOnWayFromDB(cursor, way_id, x_range=None, y_range=None):
