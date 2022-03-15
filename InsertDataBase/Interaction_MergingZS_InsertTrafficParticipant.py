@@ -7,15 +7,15 @@ from InsertDataBase.CreateTables import *
 from DBtools.init_db import init_DB
 
 VehicleInfo = list()
-table = "_10"
-file = "../DataSet/INTERACTION-Dataset-DR-v1_1/recorded_trackfiles/DR_CHN_Merging_ZS/vehicle_tracks_010.csv"
+table = "_0"
+file = "../DataSet/INTERACTION-Dataset-DR-v1_1/recorded_trackfiles/DR_CHN_Merging_ZS/vehicle_tracks_000.csv"
 VehicleInfo = pd.read_csv(file, decimal=",", low_memory=False)
 VehicleInfo = np.array(VehicleInfo)
 VehicleInfo = np.hstack((VehicleInfo[:, 0:4], VehicleInfo[:, 4:].astype(np.float)))
 print(type(VehicleInfo))
 
 
-def InsertTable(table):
+def InsertTable(cursor, table):
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,orientation,lane_id) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
@@ -58,7 +58,7 @@ def InsertTable(table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Test_Scenario_DB")
     CreateTrafficParticipantPropertyTable(cursor, table)
     CreateTrafficTimingStateTable(cursor, table)
     InsertTable(cursor, table)

@@ -113,7 +113,7 @@ def get_adjacent_way(element):
     return adjacent_way_dict
 
 
-def update_lane_border(border_list, lane_left, lane_right):
+def update_lane_border(cursor, border_list, lane_left, lane_right):
     for way in border_list:
         if lane_left:
             UpdateLeftLaneSql = '''Update Way_Info set l_border_of = %s where way_id = %s'''
@@ -123,121 +123,121 @@ def update_lane_border(border_list, lane_left, lane_right):
             cursor.execute(UpdateRightLaneSql, (lane_right, way))
 
 
-def UpdateLaneWayConnection():
+def UpdateLaneWayConnection(cursor):
     border_1_2 = [10011]
-    update_lane_border(border_1_2, None , '1')
+    update_lane_border(cursor, border_1_2, None , '1')
     border_1_1 =[10068]
-    update_lane_border(border_1_1, '1', None)
+    update_lane_border(cursor, border_1_1, '1', None)
 
     border_2_2 = [10068]
-    update_lane_border(border_2_2, None, '2')
+    update_lane_border(cursor, border_2_2, None, '2')
     border_2_1 = [10079]
-    update_lane_border(border_2_1, '2', None)
+    update_lane_border(cursor, border_2_1, '2', None)
 
     border_CA1_5_2 = [10044]
-    update_lane_border(border_CA1_5_2, None, 'CA1_5')
+    update_lane_border(cursor, border_CA1_5_2, None, 'CA1_5')
     border_CA1_5_1 = [10014]
-    update_lane_border(border_CA1_5_1, 'CA1_5', None)
+    update_lane_border(cursor, border_CA1_5_1, 'CA1_5', None)
 
     border_5_1 = [10065, 10022, 10062, 10049, 10047]
-    update_lane_border(border_5_1, '5', None)
+    update_lane_border(cursor, border_5_1, '5', None)
     border_5_2 = [10055, 10039, 10053, 10059, 10005, 10066, 10041]
-    update_lane_border(border_5_2, None, '5')
+    update_lane_border(cursor, border_5_2, None, '5')
 
     border_3_2 = [10020, 10026]
-    update_lane_border(border_3_2, None, '3')
+    update_lane_border(cursor, border_3_2, None, '3')
     border_3_1 = [10055]
-    update_lane_border(border_3_1, '3', None)
+    update_lane_border(cursor, border_3_1, '3', None)
 
     border_CA2_4_2 = [10033]
-    update_lane_border(border_CA2_4_2, None, 'CA2_4')
+    update_lane_border(cursor, border_CA2_4_2, None, 'CA2_4')
     border_CA2_4_1 = [10015]
-    update_lane_border(border_CA2_4_1, 'CA2_4', None)
+    update_lane_border(cursor, border_CA2_4_1, 'CA2_4', None)
 
     border_4_2 = [10081, 10077, 10075, 10073, 10043]
-    update_lane_border(border_4_2, None, '4')
+    update_lane_border(cursor, border_4_2, None, '4')
     border_4_1 = [10053, 10059, 10005, 10066, 10041]
-    update_lane_border(border_4_1, '4', None)
+    update_lane_border(cursor, border_4_1, '4', None)
 
     border_CA2_5_2 = [10015]
-    update_lane_border(border_CA2_5_2, None, 'CA2_5')
+    update_lane_border(cursor, border_CA2_5_2, None, 'CA2_5')
     border_CA2_5_1 = [10012]
-    update_lane_border(border_CA2_5_1, 'CA2_5', None)
+    update_lane_border(cursor, border_CA2_5_1, 'CA2_5', None)
 
     border_6_2 = [10065, 10022, 10062, 10049, 10047]
     border_6_1 = [10027, 10025, 10038, 10054, 10042, 10061, 10057]
-    update_lane_border(border_6_2, None, '6')
-    update_lane_border(border_6_1, '6', None)
+    update_lane_border(cursor, border_6_2, None, '6')
+    update_lane_border(cursor, border_6_1, '6', None)
 
     border_CA1_6_2 = [10012]
     border_CA1_6_1 = [10083]
-    update_lane_border(border_CA1_6_1, 'CA1_6', None)
-    update_lane_border(border_CA1_6_2, None, 'CA1_6')
+    update_lane_border(cursor, border_CA1_6_1, 'CA1_6', None)
+    update_lane_border(cursor, border_CA1_6_2, None, 'CA1_6')
 
     border_CA2_6_2 = [10014]
     border_CA2_6_1 = [10013]
-    update_lane_border(border_CA2_6_1, 'CA2_6', None)
-    update_lane_border(border_CA2_6_2, None, 'CA2_6')
+    update_lane_border(cursor, border_CA2_6_1, 'CA2_6', None)
+    update_lane_border(cursor, border_CA2_6_2, None, 'CA2_6')
 
     border_7_1 = [10104]
-    update_lane_border(border_7_1, '7', None)
+    update_lane_border(cursor, border_7_1, '7', None)
     border_7_2 = [10101]
-    update_lane_border(border_7_2, None, '7')
+    update_lane_border(cursor, border_7_2, None, '7')
 
     border_CA5_7_1 = [10003]
-    update_lane_border(border_CA5_7_1, 'CA5_7', None)
+    update_lane_border(cursor, border_CA5_7_1, 'CA5_7', None)
     border_CA5_7_2 = [10002]
-    update_lane_border(border_CA5_7_2, None, 'CA5_7')
+    update_lane_border(cursor, border_CA5_7_2, None, 'CA5_7')
 
     border_8_2 = [10104]
     border_8_1 = [10102]
-    update_lane_border(border_8_1, '8', None)
-    update_lane_border(border_8_2, None, '8')
+    update_lane_border(cursor, border_8_1, '8', None)
+    update_lane_border(cursor, border_8_2, None, '8')
 
     border_CA6_7_1 = [10035]
-    update_lane_border(border_CA6_7_1, 'CA6_7', None)
+    update_lane_border(cursor, border_CA6_7_1, 'CA6_7', None)
     border_CA6_7_2 = [10056]
-    update_lane_border(border_CA6_7_2, None, 'CA6_7')
+    update_lane_border(cursor, border_CA6_7_2, None, 'CA6_7')
 
     border_CA4_8_2 = [10016]
-    update_lane_border(border_CA4_8_2, None, 'CA4_8')
+    update_lane_border(cursor, border_CA4_8_2, None, 'CA4_8')
     border_CA4_8_1 = [10017]
-    update_lane_border(border_CA4_8_1, 'CA4_8', None)
+    update_lane_border(cursor, border_CA4_8_1, 'CA4_8', None)
 
     border_CA5_8_1 = [10018]
     border_CA5_8_2 = [10035]
-    update_lane_border(border_CA5_8_2, None, 'CA5_8')
-    update_lane_border(border_CA5_8_1, 'CA5_8', None)
+    update_lane_border(cursor, border_CA5_8_2, None, 'CA5_8')
+    update_lane_border(cursor, border_CA5_8_1, 'CA5_8', None)
 
     border_9_1 = [10106]
-    update_lane_border(border_9_1, '9', None)
+    update_lane_border(cursor, border_9_1, '9', None)
     border_9_2 = [10103]
-    update_lane_border(border_9_2, None, '9')
+    update_lane_border(cursor, border_9_2, None, '9')
 
     border_10_2 = [10106]
     border_10_1 = [10089]
-    update_lane_border(border_10_1, '10', None)
-    update_lane_border(border_10_2, None, '10')
+    update_lane_border(cursor, border_10_1, '10', None)
+    update_lane_border(cursor, border_10_2, None, '10')
 
     border_CA5_9_1 = [10010]
-    update_lane_border(border_CA5_9_1, 'CA5_9', None)
+    update_lane_border(cursor, border_CA5_9_1, 'CA5_9', None)
     border_CA5_9_2 = [10007]
-    update_lane_border(border_CA5_9_2, None, 'CA5_9')
+    update_lane_border(cursor, border_CA5_9_2, None, 'CA5_9')
 
     border_CA6_10_1 = [10085]
-    update_lane_border(border_CA6_10_1, 'CA6_10', None)
+    update_lane_border(cursor, border_CA6_10_1, 'CA6_10', None)
     border_CA6_10_2 = [10078]
-    update_lane_border(border_CA6_10_2, None, 'CA6_10')
+    update_lane_border(cursor, border_CA6_10_2, None, 'CA6_10')
 
     border_11_1 = [10057]
-    update_lane_border(border_11_1, '11', None)
+    update_lane_border(cursor, border_11_1, '11', None)
     border_11_2 = [10032]
-    update_lane_border(border_11_2, None, '11')
+    update_lane_border(cursor, border_11_2, None, '11')
 
     border_CA10_11_1 = [10087]
-    update_lane_border(border_CA10_11_1, 'CA10_11', None)
+    update_lane_border(cursor, border_CA10_11_1, 'CA10_11', None)
     border_CA10_11_2 = [10050]
-    update_lane_border(border_CA10_11_2, None, 'CA10_11')
+    update_lane_border(cursor, border_CA10_11_2, None, 'CA10_11')
 
 
 def InsertMapTable(cursor):
@@ -298,7 +298,7 @@ if __name__ == '__main__':
     CreateLaneMetaTable(cursor)
     CreateAdditionalConditionTable(cursor)
     InsertMapTable(cursor)
-    UpdateLaneWayConnection()
+    UpdateLaneWayConnection(cursor)
 
 
     conn.commit()

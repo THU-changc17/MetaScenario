@@ -70,7 +70,7 @@ def draw_map(cursor, axes):
         plt.plot(x_list, y_list, **type_dict)
         for idx in range(len(x_list)):
             plt.plot(x_list[idx], y_list[idx], '.y', markersize=1.)
-            # axes.text(x_list[idx], y_list[idx], way_id , fontsize=8, color="b")
+            axes.text(x_list[idx], y_list[idx], way_id , fontsize=8, color="b")
 
 
 
@@ -125,7 +125,7 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("InD_I_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Test_Scenario_DB")
     fig, axes = plt.subplots(1, 1)
     fig.canvas.set_window_title("DatasetMap Visualization")
     draw_map(cursor, axes)

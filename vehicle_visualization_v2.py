@@ -107,7 +107,7 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
             plt.title("Dataset Visualization TimeStamp: %s " % float(int(timestamp) / 1e+3))
         else:
             plt.title("Dataset Visualization Time: %s s" % round(timestamp / 1000, 3))
-        fig.set_size_inches(10.8, 10.8)
+        fig.set_size_inches(10.8, 9.6)
         plt.pause(0.001)
 
     plt.ioff()
@@ -115,7 +115,8 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
 
 
 if __name__=='__main__':
-    vehicle_visualize("NGSIM_I_80_Scenario_DB", "_1") #, begin=1113433372100, end=1113433375100)
-    # vehicle_visualize("Interaction_MergingZS_Scenario_DB", "_8", begin=10000, end=100000)
+    # vehicle_visualize("NGSIM_I_80_Scenario_DB", "_1") #, begin=1113433372100, end=1113433375100)
+    # vehicle_visualize("Interaction_MergingZS_Test_Scenario_DB", "_0")
+    vehicle_visualize("Interaction_Intersection_EP0_Scenario_DB", "_0")
     # vehicle_visualize("InD_I_Scenario_DB", "_1", begin=880000, end=920000)
     # vehicle_visualize("Argoverse_MIA_Scenario_DB", "_64987")

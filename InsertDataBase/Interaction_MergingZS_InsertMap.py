@@ -257,7 +257,7 @@ def InsertMapTable(cursor):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Test_Scenario_DB")
     CreateNodeInfoTable(cursor)
     CreateWayInfoTable(cursor)
     CreateNodeToWayTable(cursor)

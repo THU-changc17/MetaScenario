@@ -10,4 +10,4 @@ def CreateDB(DB):
     conn.close()
     print('Create TrafficScenarioDB successfully')
 
-CreateDB("InD_I_Scenario_DB")
+CreateDB("Interaction_MergingZS_Test_Scenario_DB")

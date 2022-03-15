@@ -52,7 +52,7 @@ def ClockwiseSort(left_node, right_node):
     return polygon_point_list
 
 
-def RearrangeNodePolygon(lane_id):
+def RearrangeNodePolygon(cursor, lane_id):
     SearchLeftLaneNodesql = '''select Node_Info.node_id,local_x,local_y from (Node_Info join Node_To_Way on Node_Info.node_id = Node_To_Way.node_id)
         join Way_Info on Node_To_Way.way_id = Way_Info.way_id
         where l_border_of = '%s' group by Node_Info.node_id,local_x,local_y'''%(lane_id)
@@ -75,42 +75,45 @@ def RearrangeNodePolygon(lane_id):
     return rearrange_node_list
 
 
-polygon_1 = RearrangeNodePolygon("1")
-polygon_2 = RearrangeNodePolygon("2")
-polygon_3 = RearrangeNodePolygon("3")
-polygon_4 = RearrangeNodePolygon("4")
-polygon_5 = RearrangeNodePolygon("5")
-polygon_6 = RearrangeNodePolygon("6")
-polygon_7 = RearrangeNodePolygon("7")
-polygon_8 = RearrangeNodePolygon("8")
-polygon_9 = RearrangeNodePolygon("9")
-polygon_10 = RearrangeNodePolygon("10")
-polygon_11 = RearrangeNodePolygon("11")
-polygon_CA1_5 = RearrangeNodePolygon("CA1_5")
-polygon_CA1_6 = RearrangeNodePolygon("CA1_6")
-polygon_CA2_4 = RearrangeNodePolygon("CA2_4")
-polygon_CA2_5 = RearrangeNodePolygon("CA2_5")
-polygon_CA2_6 = RearrangeNodePolygon("CA2_6")
-polygon_CA5_7 = RearrangeNodePolygon("CA5_7")
-polygon_CA5_8 = RearrangeNodePolygon("CA5_8")
-polygon_CA5_9 = RearrangeNodePolygon("CA5_9")
-polygon_CA6_7 = RearrangeNodePolygon("CA6_7")
-polygon_CA10_11 = RearrangeNodePolygon("CA10_11")
+def ProcessPolygon(cursor):
+    polygon_1 = RearrangeNodePolygon(cursor, "1")
+    polygon_2 = RearrangeNodePolygon(cursor, "2")
+    polygon_3 = RearrangeNodePolygon(cursor, "3")
+    polygon_4 = RearrangeNodePolygon(cursor, "4")
+    polygon_5 = RearrangeNodePolygon(cursor, "5")
+    polygon_6 = RearrangeNodePolygon(cursor, "6")
+    polygon_7 = RearrangeNodePolygon(cursor, "7")
+    polygon_8 = RearrangeNodePolygon(cursor, "8")
+    polygon_9 = RearrangeNodePolygon(cursor, "9")
+    polygon_10 = RearrangeNodePolygon(cursor, "10")
+    polygon_11 = RearrangeNodePolygon(cursor, "11")
+    polygon_CA1_5 = RearrangeNodePolygon(cursor, "CA1_5")
+    polygon_CA1_6 = RearrangeNodePolygon(cursor, "CA1_6")
+    polygon_CA2_4 = RearrangeNodePolygon(cursor, "CA2_4")
+    polygon_CA2_5 = RearrangeNodePolygon(cursor, "CA2_5")
+    polygon_CA2_6 = RearrangeNodePolygon(cursor, "CA2_6")
+    polygon_CA5_7 = RearrangeNodePolygon(cursor, "CA5_7")
+    polygon_CA5_8 = RearrangeNodePolygon(cursor, "CA5_8")
+    polygon_CA5_9 = RearrangeNodePolygon(cursor, "CA5_9")
+    polygon_CA6_7 = RearrangeNodePolygon(cursor, "CA6_7")
+    polygon_CA10_11 = RearrangeNodePolygon(cursor, "CA10_11")
 
 
-polygon_list = [polygon_1, polygon_2, polygon_3, polygon_4, polygon_5, polygon_6, polygon_7, polygon_8, polygon_9, polygon_10,
-                polygon_11, polygon_CA1_5, polygon_CA1_6, polygon_CA2_4, polygon_CA2_5, polygon_CA2_6, polygon_CA5_7,
-                polygon_CA5_8, polygon_CA5_9, polygon_CA6_7, polygon_CA10_11]
+    polygon_list = [polygon_1, polygon_2, polygon_3, polygon_4, polygon_5, polygon_6, polygon_7, polygon_8, polygon_9, polygon_10,
+                    polygon_11, polygon_CA1_5, polygon_CA1_6, polygon_CA2_4, polygon_CA2_5, polygon_CA2_6, polygon_CA5_7,
+                    polygon_CA5_8, polygon_CA5_9, polygon_CA6_7, polygon_CA10_11]
 
-polygon_dict = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6', 6: '7',
-                7: '8', 8: '9', 9: '10', 10: '11', 11: 'CA1_5', 12: 'CA1_6',
-                13: 'CA2_4', 14: 'CA2_5', 15: 'CA2_6', 16: 'CA5_7', 17: 'CA5_8',
-                18: 'CA5_9', 19: 'CA6_7', 20: 'CA10_11'}
+    polygon_dict = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6', 6: '7',
+                    7: '8', 8: '9', 9: '10', 10: '11', 11: 'CA1_5', 12: 'CA1_6',
+                    13: 'CA2_4', 14: 'CA2_5', 15: 'CA2_6', 16: 'CA5_7', 17: 'CA5_8',
+                    18: 'CA5_9', 19: 'CA6_7', 20: 'CA10_11'}
+    return polygon_list, polygon_dict
 
 
 def InsertTable(cursor, table):
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,orientation,lane_id) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s)"
+    polygon_list, polygon_dict = ProcessPolygon(cursor)
     for i in range(len(VehicleInfo)):
         time_stamp = VehicleInfo[i][2]
         vehicle_id = VehicleInfo[i][0]

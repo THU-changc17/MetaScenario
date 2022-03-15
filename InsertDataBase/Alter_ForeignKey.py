@@ -29,11 +29,11 @@ def AlterParticipantForegnKey(cursor, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("NGSIM_I_80_Scenario_DB")
-    table = "_3"
+    conn, cursor = init_DB("Interaction_MergingZS_Test_Scenario_DB")
+    table = "_0"
     print(table)
-    # AlterMapForegnKey()
-    # AlterParticipantForegnKey(table)
+    # AlterMapForegnKey(cursor)
+    AlterParticipantForegnKey(cursor, table)
     cursor.close()
     conn.commit()
     conn.close()
