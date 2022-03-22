@@ -57,8 +57,8 @@ the participant foreignkey can be added when users store new participant data fi
 
 ### Data Visulization
 We also implement a common visualization program interface based on the unified database framework to facilitate
-researchers to visually observe the driving scenarios embodied in each dataset(refer to [map_visualization](https://github.com/THU-changc17/MetaScenario/map_visualization.py) 
-and [vehicle_visualization](https://github.com/THU-changc17/MetaScenario/vehicle_visualization_v2.py)).
+researchers to visually observe the driving scenarios embodied in each dataset(refer to [map_visualization](https://github.com/THU-changc17/MetaScenario/blob/main/map_visualization.py) 
+and [vehicle_visualization](https://github.com/THU-changc17/MetaScenario/blob/main/vehicle_visualization_v2.py)).
 
 `python vehicle_visualization_v2.py`
 
@@ -81,7 +81,7 @@ description of the relationship and state between ego vehicle
 and surrounding elements (referring to the components of the
 traffic scenario such as vehicles, road network nodes, and lanes).
 
-Users need to select or define the parameters in [relation_extractor](https://github.com/THU-changc17/MetaScenario/relation_extractor.py)
+Users need to select or define the parameters in [relation_extractor](https://github.com/THU-changc17/MetaScenario/blob/main/relation_extractor.py)
 
 Generate the scene graph, which is a frame of atom scenario `python scene_graph_visualization.py`
 
