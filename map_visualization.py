@@ -69,7 +69,7 @@ def draw_map(cursor, axes):
                 break
         plt.plot(x_list, y_list, **type_dict)
         for idx in range(len(x_list)):
-            plt.plot(x_list[idx], y_list[idx], '.y', markersize=1.)
+            plt.plot(x_list[idx], y_list[idx], '.y', markersize=2.)
             # axes.text(x_list[idx], y_list[idx], node_list[idx] , fontsize=8, color="b")
 
 
