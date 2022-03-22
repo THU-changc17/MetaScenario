@@ -98,7 +98,7 @@ adjacent traffic participants.
 
 `cd Annotator`
 
-`python Interaction_Merge_Anotator`
+`python Interaction_Merge_Anotator.py`
 
 The annotation results will be recorded in Scenario_Behavior_Index Table.
 
