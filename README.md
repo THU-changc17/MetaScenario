@@ -85,7 +85,7 @@ Users need to select or define the parameters in [relation_extractor](https://gi
 
 Generate the scene graph, which is a frame of atom scenario `python scene_graph_visualization.py`
 
-![Image](https://github.com/THU-changc17/MetaScenario/blob/main/AtomScenarioGraph/4_1300.jpg)
+![Image](https://github.com/THU-changc17/MetaScenario/blob/main/AtomScenarioGraph/4_1300.jpg){:height="60%" width="60%"}
 
 ### Data Annotation
 
