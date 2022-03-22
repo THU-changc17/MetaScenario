@@ -2,64 +2,104 @@
 MetaScenario: A Framework for Driving Scenario Data Description, Storage and Indexing
 ---
 
+## Introduction
+![Image](https://github.com/THU-changc17/MetaScenario/blob/main/Visualization/DataBase.jpg)
+
+MetaScenario is a unified framework for driving scenario data. We describe driving scenarios and design the centralized and unified data framework for storage, processing, and indexing of scenario data based on relational database.
+
+The concept of atom scenario is proposed and characterized using semantic graphs. We also annotate and classify behaviors of traffic participants in atom scenarios by extracting the spatial-temporal evolution of semantic information. The annotation facilitates the indexing and extraction of data, which allows the evaluation of the
+scenario datasets using data distribution and annotation statistics. 
+
+MetaScenario can provide researchers with a convenient tool for scenario data extraction and important analytical references.
+
+## Compatible Scenario Datasets
 Based on the MetaScenario framework, we adapt and 
-store the typical scenario datasets to realize the data adaptation without losing the information 
+store the typical scenario datasets to implement the data adaptation without losing the information 
 and accuracy of the original dataset.
 
-Here we select four typical
-traffic scenario datasets, NGSIM, HighD, Argoverse, and
-Interaction to demonstrate the data adaptation work.
+Here we select four typical traffic scenario datasets, NGSIM, HighD, Argoverse, and Interaction to demonstrate the data adaptation work.
 
-We complete the adaptation storage and processing of the
-datasets(refer to InsertDataBase folder), and implement a common visualization program
-interface based on the unified database framework to facilitate
-researchers to visually observe the driving scenarios embodied
-in each dataset(refer to map_visualization and vehicle_visualization). 
+Considering the licensing of the datasets, we do not upload the original datasets here. Researchers can obtain the datasets through registration or application.
+The URLs of the relevant datasets are as follows:
 
-![Image](https://github.com/THU-changc17/MetaScenario/blob/main/Visualization/Argo.png)
+[NGSIM](https://ops.fhwa.dot.gov/trafficanalysistools/ngsim.htm) &nbsp; [HighD](https://www.highd-dataset.com/)
+&nbsp; [Interaction](http://interaction-dataset.com/)  &nbsp; [Argoverse](https://www.argoverse.org/data.html)
 
-![Image](https://github.com/THU-changc17/MetaScenario/blob/main/Visualization/Inter.png)
+## Usage
+Let's take the Interaction Merging DataSet as example.
 
-In vehicle trajectory prediction and planning research field,
-many researchers currently favor the format of scene snapshot
-images for their input data. Similar to the format
-provided by the official [Lyft dataset](https://level-5.global/data/), our data framework
+### Requirements
+MySQL >= 5.7
+
+Python 3.6
+
+### Data Storage
+
+Check the MetaScenario project folder has been included in sys.path and get started.
+`cd InsertDataBase`
+
+Modify the DB name and create new DB.
+`python CreateDB`
+
+Please modify the dataset folder location. 
+
+Store the road environment data into database.
+`python Interaction_MergingZS_InsertMap.py`
+
+Store the traffic participant data into database.
+`python Interaction_MergingZS_InsertTrafficParticipant.py`
+
+Add the foreign key in the database.
+`python Alter_ForeignKey.py`
+
+Note: The map foreignkey should be added only once and 
+the participant foreignkey can be added when users store new participant data file.
+
+### Data Visulization
+We also implement a common visualization program interface based on the unified database framework to facilitate
+researchers to visually observe the driving scenarios embodied in each dataset(refer to [map_visualization](https://github.com/THU-changc17/MetaScenario/map_visualization.py) 
+and [vehicle_visualization](https://github.com/THU-changc17/MetaScenario/vehicle_visualization_v2.py)).
+
+`python vehicle_visualization_v2.py`
+
+![Image](https://github.com/THU-changc17/MetaScenario/blob/main/Visualization/Merging.png)
+
+### Scene Graph Converter
+In vehicle trajectory prediction and planning research field, many researchers currently favor the format of scene snapshot
+images for their input data. Similar to the format provided by the official [Lyft dataset](https://level-5.global/data/), our data framework
 can support a convenient conversion to this format.
+
+`python scene_image_snapshot.py`
 
 <div align=center><img src="https://github.com/THU-changc17/MetaScenario/blob/main/Visualization/snapimage.png"/></div>
 
+### Atom Scenario Characterization
 To characterize the atom scenarios, we use the structure of
 semantic graphs. We need a range of space and time parameters, a
 vehicle as ego vehicle, and establish a semantic graph to give a
 description of the relationship and state between ego vehicle
 and surrounding elements (referring to the components of the
 traffic scenario such as vehicles, road network nodes, and lanes).
-If the spatial distance exceeds the threshold we set, it is
-considered that there is no obvious interaction with the current
-ego vehicle. The nodes in the semantic graph represent traffic
-elements, storing information such as attributes and categories
-of the nodes. The edges store the relationships between the
-nodes(refer to relation_extractor and scene_graph_visualization).
+
+Users need to select or define the parameters in [relation_extractor](https://github.com/THU-changc17/MetaScenario/relation_extractor.py)
+
+Generate the scene graph, which is a frame of atom scenario `python scene_graph_visualization.py`
 
 ![Image](https://github.com/THU-changc17/MetaScenario/blob/main/AtomScenarioGraph/4_1300.jpg)
+
+### Data Annotation
 
 We also annotate NGSIM, HighD, Argoverse, and Interaction
 datasets stored in the data framework through the temporal and
 spatial evolution of the semantic graph, including the begin and
 end timestamp of captured scenario fragments, the driving
 behaviors generated by the vehicle and the interaction with
-adjacent traffic participants(refer to Annotator folder).
+adjacent traffic participants.
 
-Considering the permission of the datasets, we do not 
-upload the original datasets here, 
-the URL of the relevant datasets are as follows:
+`cd Annotator`
 
-[NGSIM](https://ops.fhwa.dot.gov/trafficanalysistools/ngsim.htm)
+`python Interaction_Merge_Anotator`
 
-[HighD](https://www.highd-dataset.com/)
+The annotation results will be recorded in Scenario_Behavior_Index Table.
 
-[Interaction](http://interaction-dataset.com/)
-
-[Argoverse](https://www.argoverse.org/data.html)
-
-
+## Citation

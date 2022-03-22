@@ -89,7 +89,12 @@ def min_distance_between_vehicles(ego_location, ego_property, other_location, ot
     adjacent_vector = np.array([other_location[0] - ego_location[0], other_location[1] - ego_location[1]])
     Lx = np.sqrt(ego_vector.dot(ego_vector))
     Ly = np.sqrt(adjacent_vector.dot(adjacent_vector))
-    Cobb = int((np.arccos(ego_vector.dot(adjacent_vector) / (float(Lx * Ly))) * 180 / np.pi))
+    if ego_vector.dot(adjacent_vector) / (float(Lx * Ly)) > 1:
+        Cobb = 0
+    elif ego_vector.dot(adjacent_vector) / (float(Lx * Ly)) < -1:
+        Cobb = 180
+    else:
+        Cobb = int((np.arccos(ego_vector.dot(adjacent_vector) / (float(Lx * Ly))) * 180 / np.pi))
     if(Cobb < 90):
         direction = "front"
         if(Cobb >= 5):
@@ -106,7 +111,7 @@ def min_distance_between_vehicles(ego_location, ego_property, other_location, ot
                 direction = direction + "_left"
     if int(ego_vector.dot(object_vector) < 0):
         same_direction = False
-    return direction, minDist,same_direction
+    return direction, minDist, same_direction
 
 
 def min_distance_between_vehicles_no_shape(ego_location, other_location):

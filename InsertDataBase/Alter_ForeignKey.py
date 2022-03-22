@@ -28,12 +28,20 @@ def AlterParticipantForegnKey(cursor, table):
     cursor.execute(AlterForeignKey)
 
 
+def AlterScenarioBehaviorForegnKey(cursor, table):
+    AlterForeignKey = 'ALTER TABLE Scenario_Behavior_Index' + table + ' ADD FOREIGN KEY (ego_vehicle) REFERENCES Traffic_timing_state' + table + '(vehicle_id)'
+    cursor.execute(AlterForeignKey)
+    AlterForeignKey = 'ALTER TABLE Scenario_Behavior_Index' + table + ' ADD FOREIGN KEY (ego_vehicle) REFERENCES Traffic_participant_property' + table + '(vehicle_id)'
+    cursor.execute(AlterForeignKey)
+
+
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Test_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
     table = "_0"
     print(table)
     # AlterMapForegnKey(cursor)
-    AlterParticipantForegnKey(cursor, table)
+    # AlterParticipantForegnKey(cursor, table)
+    # AlterScenarioBehaviorForegnKey(cursor, table)
     cursor.close()
     conn.commit()
     conn.close()

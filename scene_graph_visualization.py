@@ -112,8 +112,8 @@ class SceneGraph:
 
 
 if __name__=='__main__':
-    conn, cursor = init_DB("NGSIM_I80_Scenario_DB")
-    Graph = SceneGraph(cursor, 50, 1113433183800, "_1")
+    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
+    Graph = SceneGraph(cursor, 23, 1500, "_0")
     Graph.add_vehicle_vehicle_relation()
     Graph.add_vehicle_node_relation()
     Graph.add_vehicle_lane_relation()

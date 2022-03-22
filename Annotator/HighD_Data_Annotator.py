@@ -37,7 +37,7 @@ def BahaviorRecognition(cursor, ChunkSize, vehicle_id, table):
         BehaviorTimeRecord = list()
         StartTime = TimeSec[0]
         EndTime = TimeSec[1]
-        TimeInterval = 400
+        TimeInterval = 120
         for NowTime in range(StartTime, EndTime, TimeInterval):
             r = RelationExtractor(cursor, vehicle_id, table)
             r.get_vehicle_relation(NowTime)
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     conn, cursor = init_DB("HighD_I_Scenario_DB")
     ChunkSize = 6
     all_arr = np.zeros((3, 11)).astype(np.int)
-    for i in range(1, 4):
+    for i in range(2, 4):
         print("table: ", i)
         table = "_" + str(i)
         CreateScenarioBehaviorIndexTable(cursor, table)

@@ -174,8 +174,8 @@ def FittingLaneCurve(lane_id):
     left_z = np.polyfit(left_node_x, left_node_y, 2)
     left_p = np.poly1d(left_z)
     y_pred_left = left_p(left_node_x)
-    plot1 = pylab.plot(left_node_x, left_node_y, '*', label='original values')
-    plot2 = pylab.plot(left_node_x, y_pred_left, 'r', label='fit values')
+    plot1 = pylab.plot(left_node_x, left_node_y, '*', label='L Border Nodes')
+    plot2 = pylab.plot(left_node_x, y_pred_left, 'r', label='L Border Fitting Curve')
     print(lane_id, "left_border: ", left_p)
 
 
@@ -199,9 +199,10 @@ def FittingLaneCurve(lane_id):
     right_z = np.polyfit(right_node_x, right_node_y, 2)
     right_p = np.poly1d(right_z)
     y_pred_right = right_p(right_node_x)
-    plot1 = pylab.plot(right_node_x, right_node_y, 'o', label='original values')
-    plot2 = pylab.plot(right_node_x, y_pred_right, 'y', label='fit values')
+    plot1 = pylab.plot(right_node_x, right_node_y, 'o', label='R Border Nodes')
+    plot2 = pylab.plot(right_node_x, y_pred_right, 'y', label='L Border Fitting Curve')
     print(lane_id, "right_border: ", right_p)
+    pylab.legend()
     pylab.show()
     return left_node_x, left_node_y, y_pred_left, right_node_x, right_node_y, y_pred_right
 
@@ -257,7 +258,7 @@ def InsertMapTable(cursor):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Test_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
     CreateNodeInfoTable(cursor)
     CreateWayInfoTable(cursor)
     CreateNodeToWayTable(cursor)
@@ -266,13 +267,13 @@ if __name__ == '__main__':
     InsertMapTable(cursor)
     UpdateLaneWayConnection()
 
-    FittingLaneCurve(1)
-    FittingLaneCurve(2)
-    FittingLaneCurve(3)
-    FittingLaneCurve(4)
-    FittingLaneCurve(5)
-    FittingLaneCurve(6)
-    FittingLaneCurve(7)
+    # FittingLaneCurve(1)
+    # FittingLaneCurve(2)
+    # FittingLaneCurve(3)
+    # FittingLaneCurve(4)
+    # FittingLaneCurve(5)
+    # FittingLaneCurve(6)
+    # FittingLaneCurve(7)
 
     cursor.close()
     conn.commit()

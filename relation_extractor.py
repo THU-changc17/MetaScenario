@@ -13,13 +13,13 @@ from DBtools.init_db import init_DB
 # THRESH_LANE_VERY_NEAR = 3
 
 # Interaction Merging Parameter
-# THRESH_NEAR_COLL = 2
-# THRESH_VERY_NEAR = 3
-# THRESH_NEAR = 4
-# THRESH_VISIBLE = 5
-# THRESH_LANE_VISIBLE = 8
-# THRESH_LANE_NEAR = 5
-# THRESH_LANE_VERY_NEAR = 3
+THRESH_NEAR_COLL = 2
+THRESH_VERY_NEAR = 3
+THRESH_NEAR = 4
+THRESH_VISIBLE = 5
+THRESH_LANE_VISIBLE = 8
+THRESH_LANE_NEAR = 5
+THRESH_LANE_VERY_NEAR = 3
 
 # Interaction Intersection Parameter
 # THRESH_NEAR_COLL = 2
@@ -40,13 +40,13 @@ from DBtools.init_db import init_DB
 # THRESH_LANE_VERY_NEAR = 3
 
 # NGSIM I80 HighWay Parameter(m)
-THRESH_NEAR_COLL = 0.5
-THRESH_VERY_NEAR = 2
-THRESH_NEAR = 2.5
-THRESH_VISIBLE = 3
-THRESH_LANE_VISIBLE = 3
-THRESH_LANE_NEAR = 2
-THRESH_LANE_VERY_NEAR = 1
+# THRESH_NEAR_COLL = 0.5
+# THRESH_VERY_NEAR = 2
+# THRESH_NEAR = 2.5
+# THRESH_VISIBLE = 3
+# THRESH_LANE_VISIBLE = 3
+# THRESH_LANE_NEAR = 2
+# THRESH_LANE_VERY_NEAR = 1
 
 # Argoverse Parameter
 # THRESH_NEAR_COLL = 2
@@ -341,11 +341,11 @@ class RelationExtractor:
 
 if __name__=='__main__':
     # Test Relation Extractor
-    conn, cursor = init_DB("HighD_I_Scenario_DB")
-    table = "_1"
-    r = RelationExtractor(cursor, 1, table)
+    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
+    table = "_0"
+    r = RelationExtractor(cursor, 23, table)
     # timestamp = 315972619604
-    timestamp = 40
+    timestamp = 100
     r.get_vehicle_relation(timestamp)
     r.get_node_relation(timestamp)
     r.get_vehicle_node_relation(timestamp)

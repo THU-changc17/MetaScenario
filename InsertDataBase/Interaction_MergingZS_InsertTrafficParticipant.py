@@ -58,7 +58,7 @@ def InsertTable(cursor, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Test_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
     CreateTrafficParticipantPropertyTable(cursor, table)
     CreateTrafficTimingStateTable(cursor, table)
     InsertTable(cursor, table)

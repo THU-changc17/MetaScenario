@@ -129,10 +129,10 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
     ChunkSize = 10  # 10s
     all_arr = np.zeros((5,11)).astype(np.int)
-    for i in range(11):
+    for i in range(1):
         print("table: ", i)
         table = "_" + str(i)
         CreateScenarioBehaviorIndexTable(cursor, table)
