@@ -138,9 +138,9 @@ def UpdateLaneWayConnection():
     border_2_1_3_2 = [10020, 10055, 10004, 10061, 10057]
     border_3_1_4_2 = [10052, 10021, 10041, 10003, 10009, 10011]
     border_4_1 = [10067, 10070, 10066, 10064, 10069]
-    border_5_1 = [10062, 10047, 10018, 10042, 10012]
-    border_5_2_6_1 = [10045, 10027, 10024, 10030, 10017, 10013]
-    border_6_2_7_1 = [10044, 10028, 10022, 10031, 10016, 10014]
+    border_5_1 = [10062, 10047, 10018, 10048, 10042, 10012]
+    border_5_2_6_1 = [10045, 10027, 10024, 10030, 10035, 10017, 10013]
+    border_6_2_7_1 = [10044, 10028, 10022, 10031, 10034, 10016, 10023, 10014]
     border_7_2 = [10043, 10029, 10015, 10032, 10036, 10059, 10025]
     update_lane_border(border_1_2, None, str(1))
     update_lane_border(border_1_1_2_2, str(1), str(2))
@@ -202,7 +202,7 @@ def FittingLaneCurve(lane_id):
     plot1 = pylab.plot(right_node_x, right_node_y, 'o', label='R Border Nodes')
     plot2 = pylab.plot(right_node_x, y_pred_right, 'y', label='L Border Fitting Curve')
     print(lane_id, "right_border: ", right_p)
-    pylab.legend()
+    pylab.legend(fontsize=14)
     pylab.show()
     return left_node_x, left_node_y, y_pred_left, right_node_x, right_node_y, y_pred_right
 
@@ -259,21 +259,21 @@ def InsertMapTable(cursor):
 
 if __name__ == '__main__':
     conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
-    CreateNodeInfoTable(cursor)
-    CreateWayInfoTable(cursor)
-    CreateNodeToWayTable(cursor)
-    CreateLaneMetaTable(cursor)
-    CreateAdditionalConditionTable(cursor)
-    InsertMapTable(cursor)
-    UpdateLaneWayConnection()
+    # CreateNodeInfoTable(cursor)
+    # CreateWayInfoTable(cursor)
+    # CreateNodeToWayTable(cursor)
+    # CreateLaneMetaTable(cursor)
+    # CreateAdditionalConditionTable(cursor)
+    # InsertMapTable(cursor)
+    # UpdateLaneWayConnection()
 
-    # FittingLaneCurve(1)
-    # FittingLaneCurve(2)
-    # FittingLaneCurve(3)
-    # FittingLaneCurve(4)
-    # FittingLaneCurve(5)
-    # FittingLaneCurve(6)
-    # FittingLaneCurve(7)
+    FittingLaneCurve(1)
+    FittingLaneCurve(2)
+    FittingLaneCurve(3)
+    FittingLaneCurve(4)
+    FittingLaneCurve(5)
+    FittingLaneCurve(6)
+    FittingLaneCurve(7)
 
     cursor.close()
     conn.commit()

@@ -54,7 +54,7 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
     print(len(AllVehicleList))
     behavior_interaction_arr = np.zeros((3,11)).astype(np.int)
     all_trajectory_num = 0
-    insertIndexSql = "insert into Scenario_Behavior_Index" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
+    insertIndexSql = "insert into Scenario_Behavior_Index_v2" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
                                                                      "values(%s,%s,%s,%s,%s,%s)"
     for vehicle in AllVehicleList:
         ChunkNum, TimeSecList, InteractionTemporalList, AllOrientationList = BehaviorRecognition(cursor, ChunkSize, vehicle, table)

@@ -31,6 +31,7 @@ def BahaviorRecognition(cursor, ChunkSize, vehicle_id, table):
     AllInteractionVehicle = list()
     AllBehaviorChangeCapture = list()
     AllBehaviorChangeTimeRecord = list()
+    BehaviorTimeLag = 2000
     for TimeSec in TimeSecList:
         InteractionVehicle = set()
         BehaviorCapture = list()
@@ -38,16 +39,33 @@ def BahaviorRecognition(cursor, ChunkSize, vehicle_id, table):
         StartTime = TimeSec[0]
         EndTime = TimeSec[1]
         TimeInterval = 120
-        for NowTime in range(StartTime, EndTime, TimeInterval):
+        NowTime = StartTime
+        while NowTime < EndTime:
             r = RelationExtractor(cursor, vehicle_id, table)
             r.get_vehicle_relation(NowTime)
             r.get_vehicle_lane_relation(NowTime)
             r.get_lane_lane_relation()
             InteractionVehicle.update(r.relation_vehicle)
             for V2L in r.relation_V2L_list:
-                if V2L[0] == vehicle_id and (len(BehaviorCapture) == 0 or V2L[2] != BehaviorCapture[-1]):
+                if V2L[0] == vehicle_id and len(BehaviorCapture) == 0:
                     BehaviorCapture.append(V2L[2])
                     BehaviorTimeRecord.append(NowTime)
+                elif V2L[0] == vehicle_id and V2L[2] != BehaviorCapture[-1]:
+                    BehaviorCapture.append(V2L[2])
+                    if EndTime > NowTime + BehaviorTimeLag:
+                        BehaviorTimeRecord.append(NowTime + BehaviorTimeLag)
+                        for LagTime in range(NowTime + TimeInterval, NowTime + BehaviorTimeLag, TimeInterval):
+                            r.get_vehicle_relation(LagTime)
+                            InteractionVehicle.update(r.relation_vehicle)
+                        NowTime = NowTime + BehaviorTimeLag - TimeInterval
+                    else:
+                        BehaviorTimeRecord.append(EndTime)
+                        for LagTime in range(NowTime + TimeInterval, EndTime, TimeInterval):
+                            r.get_vehicle_relation(LagTime)
+                            InteractionVehicle.update(r.relation_vehicle)
+                        NowTime = EndTime - TimeInterval
+            NowTime = NowTime + TimeInterval
+
         AllInteractionVehicle.append(InteractionVehicle)
         AllBehaviorChangeCapture.append(BehaviorCapture)
         AllBehaviorChangeTimeRecord.append(BehaviorTimeRecord)
@@ -55,13 +73,13 @@ def BahaviorRecognition(cursor, ChunkSize, vehicle_id, table):
 
 
 def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
-    insertIndexSql = "insert into Scenario_Behavior_Index" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
+    insertIndexSql = "insert into Scenario_Behavior_Index_v2" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
                                                                      "values(%s,%s,%s,%s,%s,%s)"
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
     print(len(AllVehicleList))
     behavior_interaction_arr = np.zeros((3, 11)).astype(np.int)
     all_trajectory_num = 0
-    for vehicle in AllVehicleList:
+    for vehicle in AllVehicleList[:100]:
         ChunkNum, TimeSecList, InteractionTemporalList, LaneTemporalList, LaneChangeTimeRecord = BahaviorRecognition(cursor, ChunkSize, vehicle, table)
         print(vehicle)
         behavior = "go straight"
@@ -108,7 +126,7 @@ if __name__ == '__main__':
     conn, cursor = init_DB("HighD_I_Scenario_DB")
     ChunkSize = 6
     all_arr = np.zeros((3, 11)).astype(np.int)
-    for i in range(2, 4):
+    for i in range(1, 4):
         print("table: ", i)
         table = "_" + str(i)
         CreateScenarioBehaviorIndexTable(cursor, table)

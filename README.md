@@ -39,7 +39,7 @@ Check the MetaScenario project folder has been included in sys.path and get star
 `cd InsertDataBase`
 
 Modify the DB name and create new DB.
-`python CreateDB`
+`python CreateDB.py`
 
 Please modify the dataset folder location. 
 

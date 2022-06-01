@@ -114,7 +114,7 @@ def draw_vehicle_and_trajectory(cursor, axes, ego, timestamp, interval, table):
         vehicle_location = [x, y, orientation]
         vehicle_property = utils.SearchTrafficParticipantProperty(cursor, vehicle, table)
         _, min_dist, _ = utils.min_distance_between_vehicles(ego_location, ego_property,
-                                                                                  vehicle_location, vehicle_property)
+                                                             vehicle_location, vehicle_property)
         if min_dist < 10:
             vehicle_length = vehicle_property["vehicle_length"]
             vehicle_width = vehicle_property["vehicle_width"]
@@ -151,8 +151,8 @@ if __name__ == '__main__':
     plt.margins(0, 0)
     fig.canvas.set_window_title("DatasetMap Visualization")
     x, y = draw_vehicle_and_trajectory(cursor, axes, 10, 1000, 1000, "_5")
-    draw_map_part(cursor, axes, Xlist=[x - 30, x + 20], Ylist=[y - 20, y + 20])
-    fig.set_size_inches(5, 4)
+    draw_map_part(cursor, axes, Xlist=[x - 20, x + 20], Ylist=[y - 20, y + 20])
+    fig.set_size_inches(5, 5)
     plt.show()
     fig.savefig('../save_name.eps')
 

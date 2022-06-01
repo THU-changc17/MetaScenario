@@ -47,7 +47,7 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
     vehicle_in_graph = list()
     color_list = ["whitesmoke", "oldlace", "lightgray", "aliceblue"]
 
-    for index in range(0, len(timestamp_list), 20):
+    for index in range(0, len(timestamp_list), 5):
         timestamp = timestamp_list[index]
         vehicle_list = utils.SearchTrafficParticipantByTime(cursor, timestamp, table)
         for vehicle in vehicle_list:
@@ -116,8 +116,8 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
 
 if __name__=='__main__':
     # vehicle_visualize("NGSIM_I_80_Scenario_DB", "_1") #, begin=1113433372100, end=1113433375100)
-    vehicle_visualize("Interaction_MergingZS_Testing_Scenario_DB", "_0")
-    # vehicle_visualize("HighD_I_Scenario_DB", "_1", begin=185240, end=185240)
+    # vehicle_visualize("Argoverse_MIA_Scenario_DB", "_64987")
+    vehicle_visualize("HighD_I_Scenario_DB", "_1")
     # vehicle_visualize("Interaction_Intersection_EP0_Scenario_DB", "_0")
     # vehicle_visualize("InD_I_Scenario_DB", "_1", begin=880000, end=920000)
     # vehicle_visualize("Argoverse_MIA_Scenario_DB", "_64987")

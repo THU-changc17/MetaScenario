@@ -76,7 +76,7 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
     print(len(AllVehicleList))
     behavior_interaction_arr = np.zeros((5,11)).astype(np.int)
     all_trajectory_num = 0
-    for vehicle in AllVehicleList:
+    for vehicle in AllVehicleList[:50]:
         ChunkNum, TimeSecList, InteractionTemporalList, LaneTemporalList, LaneChangeTimeRecord, AllVelocityList = BahaviorRecognition(cursor, ChunkSize, vehicle, table)
         print(vehicle)
         behavior = ""
@@ -129,7 +129,7 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
     ChunkSize = 10  # 10s
     all_arr = np.zeros((5,11)).astype(np.int)
     for i in range(1):

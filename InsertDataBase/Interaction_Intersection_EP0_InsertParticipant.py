@@ -25,7 +25,7 @@ def plot_polygon(pylogon):
     pylogon_y.append(pylogon_y[0])
     plt.plot(pylogon_x, pylogon_y, '-')
     for i in range(len(pylogon)):
-        plt.annotate(pylogon[i][0], xy = (pylogon[i][1], pylogon[i][2]), xytext = (pylogon[i][1] + 0.1, pylogon[i][2] + 0.1))
+        plt.annotate(int(pylogon[i][0]), xy = (pylogon[i][1], pylogon[i][2]), xytext = (pylogon[i][1] + 0.1, pylogon[i][2] + 0.1))
     plt.show()
 
 
@@ -146,9 +146,13 @@ def InsertTable(cursor, table):
 
 if __name__ == '__main__':
     conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
-    CreateTrafficParticipantPropertyTable(cursor, table)
-    CreateTrafficTimingStateTable(cursor, table)
-    InsertTable(cursor, table)
+    # CreateTrafficParticipantPropertyTable(cursor, table)
+    # CreateTrafficTimingStateTable(cursor, table)
+    # InsertTable(cursor, table)
+
+    polygon_list,_ = ProcessPolygon(cursor)
+    for polygon in polygon_list:
+        plot_polygon(polygon)
 
     cursor.close()
     conn.commit()
