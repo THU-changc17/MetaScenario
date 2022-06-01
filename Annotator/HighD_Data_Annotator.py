@@ -73,7 +73,7 @@ def BahaviorRecognition(cursor, ChunkSize, vehicle_id, table):
 
 
 def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
-    insertIndexSql = "insert into Scenario_Behavior_Index_v2" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
+    insertIndexSql = "insert into Scenario_Behavior_Index" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
                                                                      "values(%s,%s,%s,%s,%s,%s)"
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
     print(len(AllVehicleList))
