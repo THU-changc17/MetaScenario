@@ -139,7 +139,7 @@ def UpdateLaneWayConnection(cursor):
     border_CA1_5_1 = [10014]
     update_lane_border(cursor, border_CA1_5_1, 'CA1_5', None)
 
-    border_5_1 = [10065, 10022, 10062, 10049, 10047]
+    border_5_1 = [10065, 10022, 10062, 10049, 10047, 10046]
     update_lane_border(cursor, border_5_1, '5', None)
     border_5_2 = [10055, 10039, 10053, 10059, 10005, 10066, 10041]
     update_lane_border(cursor, border_5_2, None, '5')
@@ -164,7 +164,7 @@ def UpdateLaneWayConnection(cursor):
     border_CA2_5_1 = [10012]
     update_lane_border(cursor, border_CA2_5_1, 'CA2_5', None)
 
-    border_6_2 = [10065, 10022, 10062, 10049, 10047]
+    border_6_2 = [10065, 10022, 10062, 10049, 10047, 10040]
     border_6_1 = [10027, 10025, 10038, 10054, 10042, 10061, 10057]
     update_lane_border(cursor, border_6_2, None, '6')
     update_lane_border(cursor, border_6_1, '6', None)
@@ -189,8 +189,8 @@ def UpdateLaneWayConnection(cursor):
     border_CA5_7_2 = [10002]
     update_lane_border(cursor, border_CA5_7_2, None, 'CA5_7')
 
-    border_8_2 = [10104]
-    border_8_1 = [10102]
+    border_8_2 = [10104, 10099]
+    border_8_1 = [10102, 10098]
     update_lane_border(cursor, border_8_1, '8', None)
     update_lane_border(cursor, border_8_2, None, '8')
 
@@ -209,13 +209,18 @@ def UpdateLaneWayConnection(cursor):
     update_lane_border(cursor, border_CA5_8_2, None, 'CA5_8')
     update_lane_border(cursor, border_CA5_8_1, 'CA5_8', None)
 
+    border_CA6_8_1 = [10019]
+    border_CA6_8_2 = [10100]
+    update_lane_border(cursor, border_CA6_8_2, None, 'CA6_8')
+    update_lane_border(cursor, border_CA6_8_1, 'CA6_8', None)
+
     border_9_1 = [10106]
     update_lane_border(cursor, border_9_1, '9', None)
     border_9_2 = [10103]
     update_lane_border(cursor, border_9_2, None, '9')
 
-    border_10_2 = [10106]
     border_10_1 = [10089]
+    border_10_2 = [10106]
     update_lane_border(cursor, border_10_1, '10', None)
     update_lane_border(cursor, border_10_2, None, '10')
 
@@ -224,14 +229,14 @@ def UpdateLaneWayConnection(cursor):
     border_CA5_9_2 = [10007]
     update_lane_border(cursor, border_CA5_9_2, None, 'CA5_9')
 
-    border_CA6_10_1 = [10085]
+    border_CA6_10_1 = [10078]
     update_lane_border(cursor, border_CA6_10_1, 'CA6_10', None)
-    border_CA6_10_2 = [10078]
+    border_CA6_10_2 = [10010]
     update_lane_border(cursor, border_CA6_10_2, None, 'CA6_10')
 
-    border_11_1 = [10057]
+    border_11_1 = [10032]
     update_lane_border(cursor, border_11_1, '11', None)
-    border_11_2 = [10032]
+    border_11_2 = [10057]
     update_lane_border(cursor, border_11_2, None, '11')
 
     border_CA10_11_1 = [10087]
@@ -284,7 +289,7 @@ def InsertMapTable(cursor):
                         "values(%s,%s,%s,%s)"
     l_adj_lane = {}
     r_adj_lane = {}
-    for i in ['1','2','3','4','5','6','7','8','9','10','11','CA1_5','CA1_6','CA2_4','CA2_5','CA2_6','CA4_8','CA5_7','CA5_8','CA5_9','CA6_7','CA6_10','CA10_11']:
+    for i in ['1','2','3','4','5','6','7','8','9','10','11', 'CA1_5','CA1_6','CA2_4','CA2_5','CA2_6','CA4_8','CA5_7','CA5_8','CA5_9','CA6_7', 'CA6_8', 'CA6_10','CA10_11']:
         type_dict = dict()
         type_dict["base"] = "lanelet"
         cursor.execute(insertLaneMetaSql, (i, json.dumps(type_dict), l_adj_lane.get(i), r_adj_lane.get(i)))

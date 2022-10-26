@@ -117,7 +117,7 @@ def vehicle_visualize(DB, TableID, begin=None, end=None):
 if __name__=='__main__':
     # vehicle_visualize("NGSIM_I_80_Scenario_DB", "_1") #, begin=1113433372100, end=1113433375100)
     # vehicle_visualize("Argoverse_MIA_Scenario_DB", "_64987")
-    vehicle_visualize("HighD_I_Scenario_DB", "_1")
-    # vehicle_visualize("Interaction_Intersection_EP0_Scenario_DB", "_0")
+    # vehicle_visualize("HighD_I_Scenario_DB", "_1")
+    vehicle_visualize("Interaction_Intersection_EP0_Scenario_DB", "_5", begin=23000, end=23000)
     # vehicle_visualize("InD_I_Scenario_DB", "_1", begin=880000, end=920000)
     # vehicle_visualize("Argoverse_MIA_Scenario_DB", "_64987")

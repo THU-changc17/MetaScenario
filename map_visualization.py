@@ -3,7 +3,7 @@ import matplotlib.axes
 import matplotlib.pyplot as plt
 import DBtools.utils as utils
 from DBtools.init_db import init_DB
-
+# from InsertDataBase.Interaction_Intersection_EP0_InsertParticipant import ProcessPolygon
 
 def set_visible_area(x_list, y_list, axes):
     min_x = 10e9
@@ -20,6 +20,7 @@ def set_visible_area(x_list, y_list, axes):
     axes.set_aspect('equal', adjustable='box')
     axes.set_xlim([min_x - 10, max_x + 10])
     axes.set_ylim([min_y - 10, max_y + 10])
+    print(min_x, max_x, min_y, max_y)
 
 
 def draw_map(cursor, axes):
@@ -70,7 +71,13 @@ def draw_map(cursor, axes):
         plt.plot(x_list, y_list, **type_dict)
         for idx in range(len(x_list)):
             plt.plot(x_list[idx], y_list[idx], '.y', markersize=2.)
-            # axes.text(x_list[idx], y_list[idx], node_list[idx], fontsize=8, color="r")
+            # axes.text(x_list[idx], y_list[idx], way_id, fontsize=8, color="r")
+
+    # polygon_list, _ = ProcessPolygon(cursor)
+    # for polygon in polygon_list:
+    #     pylogon_x = list(polygon[:, 1])
+    #     pylogon_y = list(polygon[:, 2])
+    #     plt.fill(pylogon_x, pylogon_y, color="#DCDCDC")
 
 
 
@@ -123,9 +130,15 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
             plt.plot(x_list[idx], y_list[idx], '.y', markersize=2.)
             # axes.text(x_list[idx], y_list[idx], node_list[idx], fontsize=5, color="b")
 
+    # polygon_list, _ = ProcessPolygon(cursor)
+    # for polygon in polygon_list:
+    #     pylogon_x = list(polygon[:, 1])
+    #     pylogon_y = list(polygon[:, 2])
+    #     plt.fill(pylogon_x, pylogon_y, color="#DCDCDC")
+
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
+    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
     fig, axes = plt.subplots(1, 1)
     fig.canvas.set_window_title("DatasetMap Visualization")
     draw_map(cursor, axes)

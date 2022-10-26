@@ -92,21 +92,24 @@ def ProcessPolygon(cursor):
     polygon_CA2_4 = RearrangeNodePolygon(cursor, "CA2_4")
     polygon_CA2_5 = RearrangeNodePolygon(cursor, "CA2_5")
     polygon_CA2_6 = RearrangeNodePolygon(cursor, "CA2_6")
+    polygon_CA4_8 = RearrangeNodePolygon(cursor, "CA4_8")
     polygon_CA5_7 = RearrangeNodePolygon(cursor, "CA5_7")
     polygon_CA5_8 = RearrangeNodePolygon(cursor, "CA5_8")
     polygon_CA5_9 = RearrangeNodePolygon(cursor, "CA5_9")
     polygon_CA6_7 = RearrangeNodePolygon(cursor, "CA6_7")
+    polygon_CA6_8 = RearrangeNodePolygon(cursor, "CA6_8")
+    polygon_CA6_10 = RearrangeNodePolygon(cursor, "CA6_10")
     polygon_CA10_11 = RearrangeNodePolygon(cursor, "CA10_11")
 
 
     polygon_list = [polygon_1, polygon_2, polygon_3, polygon_4, polygon_5, polygon_6, polygon_7, polygon_8, polygon_9, polygon_10,
-                    polygon_11, polygon_CA1_5, polygon_CA1_6, polygon_CA2_4, polygon_CA2_5, polygon_CA2_6, polygon_CA5_7,
-                    polygon_CA5_8, polygon_CA5_9, polygon_CA6_7, polygon_CA10_11]
+                    polygon_11, polygon_CA1_5, polygon_CA1_6, polygon_CA2_4, polygon_CA2_5, polygon_CA2_6, polygon_CA4_8, polygon_CA5_7,
+                    polygon_CA5_8, polygon_CA5_9, polygon_CA6_7, polygon_CA6_8, polygon_CA6_10, polygon_CA10_11]
 
     polygon_dict = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6', 6: '7',
                     7: '8', 8: '9', 9: '10', 10: '11', 11: 'CA1_5', 12: 'CA1_6',
-                    13: 'CA2_4', 14: 'CA2_5', 15: 'CA2_6', 16: 'CA5_7', 17: 'CA5_8',
-                    18: 'CA5_9', 19: 'CA6_7', 20: 'CA10_11'}
+                    13: 'CA2_4', 14: 'CA2_5', 15: 'CA2_6', 16: 'CA4_8', 17: 'CA5_7', 18: 'CA5_8',
+                    19: 'CA5_9', 20: 'CA6_7', 21: 'CA6_8', 22: 'CA6_10', 23: 'CA10_11'}
     return polygon_list, polygon_dict
 
 
@@ -151,8 +154,8 @@ if __name__ == '__main__':
     # InsertTable(cursor, table)
 
     polygon_list,_ = ProcessPolygon(cursor)
-    for polygon in polygon_list:
-        plot_polygon(polygon)
+    # for polygon in polygon_list:
+    plot_polygon(polygon_list[5])
 
     cursor.close()
     conn.commit()

@@ -36,12 +36,12 @@ def AlterScenarioBehaviorForegnKey(cursor, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
-    table = "_0"
+    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
+    table = "_7"
     print(table)
     AlterMapForegnKey(cursor)
     AlterParticipantForegnKey(cursor, table)
-    # AlterScenarioBehaviorForegnKey(cursor, table)
+    AlterScenarioBehaviorForegnKey(cursor, table)
     cursor.close()
     conn.commit()
     conn.close()

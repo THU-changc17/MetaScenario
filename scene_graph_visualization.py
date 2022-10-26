@@ -112,8 +112,10 @@ class SceneGraph:
 
 
 if __name__=='__main__':
-    conn, cursor = init_DB("HighD_I_Scenario_DB")
-    Graph = SceneGraph(cursor, 211, 185240, "_1")
+    # conn, cursor = init_DB("HighD_I_Scenario_DB")
+    # Graph = SceneGraph(cursor, 211, 185240, "_1")
+    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
+    Graph = SceneGraph(cursor, 11, 100, "_8")
     Graph.add_vehicle_vehicle_relation()
     Graph.add_vehicle_node_relation()
     Graph.add_vehicle_lane_relation()

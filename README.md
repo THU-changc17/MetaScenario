@@ -103,3 +103,13 @@ adjacent traffic participants.
 The annotation results will be recorded in Scenario_Behavior_Index Table.
 
 ## Citation
+If you find our work is useful in your research, please consider citing:
+```
+@article{chang2022metascenario,
+  title={MetaScenario: A Framework for Driving Scenario Data Description, Storage and Indexing},
+  author={Chang, Cheng and Cao, Dongpu and Chen, Long and Su, Kui and Su, Kuifeng and Su, Yuelong and Wang, Fei-Yue and Wang, Jue and Wang, Ping and Wei, Junqing and others},
+  journal={IEEE Transactions on Intelligent Vehicles},
+  year={2022},
+  publisher={IEEE}
+}
+```
