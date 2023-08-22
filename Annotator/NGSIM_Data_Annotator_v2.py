@@ -1,16 +1,9 @@
 from DBtools.init_db import init_DB
 import DBtools.utils as utils
 import math
-from collections import Counter
-import matplotlib.pyplot as plt
 from relation_extractor import RelationExtractor
-from scene_graph_visualization import SceneGraph
 from InsertDataBase.CreateTables import CreateScenarioBehaviorIndexTable
 import numpy as np
-import pandas as pd
-import csv
-import seaborn as sns
-import pymysql
 import json
 
 
@@ -116,7 +109,7 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
     behavior_interaction_arr = np.zeros((4, 11)).astype(np.int)
     all_trajectory_num = 0
     TimeInterval = 1000
-    for vehicle in AllVehicleList[:50]:
+    for vehicle in AllVehicleList:
         BehaviorCapture, BehaviorTimeRecord, BehaviorChange, min_timestamp, max_timestamp = BahaviorRecognition(cursor, vehicle, table)
         print(vehicle)
         TimeSecList = TrajectoryChunk(ChunkSize, BehaviorTimeRecord, min_timestamp, max_timestamp)

@@ -1,18 +1,10 @@
-from sympy import im
 from DBtools.init_db import init_DB
 import DBtools.utils as utils
 import math
-from collections import Counter
-import matplotlib.pyplot as plt
 from relation_extractor import RelationExtractor
-from scene_graph_visualization import SceneGraph
 from InsertDataBase.CreateTables import CreateScenarioBehaviorIndexTable
 import numpy as np
-import pandas as pd
-import csv
-import seaborn as sns
 import itertools
-import pymysql
 import json
 
 

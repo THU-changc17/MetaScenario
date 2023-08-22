@@ -1,9 +1,3 @@
 .idea/
 __pycache__/
-DataSet/
-Driving_Behavior/
-DBtools/__pycache__/
 InsertDataBase/__pycache__/
-converters/
-plt_recordtime_num.py
-plt_statistic.py

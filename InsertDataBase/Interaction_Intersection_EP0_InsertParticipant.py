@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../")
 import pymysql
 import math
 import pandas as pd
@@ -7,16 +9,7 @@ import functools
 import matplotlib.pyplot as plt
 from InsertDataBase.CreateTables import *
 from DBtools.init_db import init_DB
-
-
-VehicleInfo = list()
-table = "_7"
-file = "../DataSet/INTERACTION-Dataset-DR-v1_1/recorded_trackfiles/DR_USA_Intersection_EP0/vehicle_tracks_007.csv"
-VehicleInfo = pd.read_csv(file, decimal=",", low_memory=False)
-VehicleInfo = np.array(VehicleInfo)
-VehicleInfo = np.hstack((VehicleInfo[:, 0:4], VehicleInfo[:, 4:].astype(np.float)))
-print(type(VehicleInfo))
-
+import argparse
 
 def plot_polygon(pylogon):
     pylogon_x = list(pylogon[:, 1])
@@ -113,7 +106,10 @@ def ProcessPolygon(cursor):
     return polygon_list, polygon_dict
 
 
-def InsertTable(cursor, table):
+def InsertTable(cursor, table, file):
+    VehicleInfo = pd.read_csv(file, decimal=",", low_memory=False)
+    VehicleInfo = np.array(VehicleInfo)
+    VehicleInfo = np.hstack((VehicleInfo[:, 0:4], VehicleInfo[:, 4:].astype(np.float)))
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,orientation,lane_id) " \
                 "values(%s,%s,%s,%s,%s,%s,%s,%s)"
     polygon_list, polygon_dict = ProcessPolygon(cursor)
@@ -148,14 +144,20 @@ def InsertTable(cursor, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
-    # CreateTrafficParticipantPropertyTable(cursor, table)
-    # CreateTrafficTimingStateTable(cursor, table)
-    # InsertTable(cursor, table)
+    parser = argparse.ArgumentParser()
+    # "Interaction_Intersection_EP0_Scenario_DB"
+    parser.add_argument('--DB', type=str, default=None)
+    parser.add_argument('--Table', type=str, default=None)
+    # "../DataSet/INTERACTION-Dataset-DR-v1_1/recorded_trackfiles/DR_USA_Intersection_EP0/vehicle_tracks_000.csv"
+    parser.add_argument('--File', type=str, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
+    table = "_" + args.Table
+    CreateTrafficParticipantPropertyTable(cursor, table)
+    CreateTrafficTimingStateTable(cursor, table)
+    InsertTable(cursor, table, args.File)
 
     polygon_list,_ = ProcessPolygon(cursor)
-    # for polygon in polygon_list:
-    plot_polygon(polygon_list[5])
 
     cursor.close()
     conn.commit()

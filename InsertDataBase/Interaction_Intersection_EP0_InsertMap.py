@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../")
 import pymysql
 import math
 import pyproj
@@ -6,6 +8,7 @@ import numpy as np
 import xml.etree.ElementTree as xml
 import json
 import pylab
+import argparse
 from InsertDataBase.CreateTables import *
 from DBtools.init_db import init_DB
 
@@ -245,12 +248,12 @@ def UpdateLaneWayConnection(cursor):
     update_lane_border(cursor, border_CA10_11_2, None, 'CA10_11')
 
 
-def InsertMapTable(cursor):
+def InsertMapTable(cursor, file):
     lat_origin = 0
     lon_origin = 0
     projector = LL2XYProjector(lat_origin, lon_origin)
 
-    e = xml.parse('../DataSet/INTERACTION-Dataset-DR-v1_1/maps/DR_USA_Intersection_EP0.osm').getroot()
+    e = xml.parse(file).getroot()
 
     point_dict = dict()
     for node in e.findall("node"):
@@ -296,15 +299,20 @@ def InsertMapTable(cursor):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
+    parser = argparse.ArgumentParser()
+    # "Interaction_Intersection_EP0_Scenario_DB"
+    parser.add_argument('--DB', type=str, default=None)
+    # '../DataSet/INTERACTION-Dataset-DR-v1_1/maps/DR_USA_Intersection_EP0.osm'
+    parser.add_argument('--File', type=str, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
     CreateNodeInfoTable(cursor)
     CreateWayInfoTable(cursor)
     CreateNodeToWayTable(cursor)
     CreateLaneMetaTable(cursor)
     CreateAdditionalConditionTable(cursor)
-    InsertMapTable(cursor)
+    InsertMapTable(cursor, args.File)
     UpdateLaneWayConnection(cursor)
-
 
     conn.commit()
     cursor.close()

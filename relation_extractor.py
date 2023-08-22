@@ -1,6 +1,7 @@
 from enum import Enum
 import DBtools.utils as utils
 import itertools
+import argparse
 from DBtools.init_db import init_DB
 
 # HighD HighWay Parameter
@@ -30,16 +31,7 @@ THRESH_LANE_VERY_NEAR = 3
 # THRESH_LANE_NEAR = 2
 # THRESH_LANE_VERY_NEAR = 1
 
-# NGSIM I80 HighWay Parameter(feet)
-# THRESH_NEAR_COLL = 2
-# THRESH_VERY_NEAR = 5
-# THRESH_NEAR = 7
-# THRESH_VISIBLE = 10
-# THRESH_LANE_VISIBLE = 8
-# THRESH_LANE_NEAR = 5
-# THRESH_LANE_VERY_NEAR = 3
-
-# NGSIM I80 HighWay Parameter(m)
+# NGSIM I80 HighWay Parameter
 # THRESH_NEAR_COLL = 0.5
 # THRESH_VERY_NEAR = 2
 # THRESH_NEAR = 2.5
@@ -339,13 +331,17 @@ class RelationExtractor:
         self.relation_L2L_list.append([subject, relation, object])
 
 
-if __name__=='__main__':
-    # Test Relation Extractor
-    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
-    table = "_0"
-    r = RelationExtractor(cursor, 23, table)
-    # timestamp = 315972619604
-    timestamp = 100
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--DB', type=str, default=None)
+    parser.add_argument('--Table', type=str, default=None)
+    parser.add_argument('--Vehicle', type=int, default=None)
+    parser.add_argument('--Timestamp', type=int, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
+    table = "_" + args.Table
+    r = RelationExtractor(cursor, args.Vehicle, table)
+    timestamp = args.Timestamp
     r.get_vehicle_relation(timestamp)
     r.get_node_relation(timestamp)
     r.get_vehicle_node_relation(timestamp)

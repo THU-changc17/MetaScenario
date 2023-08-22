@@ -1,16 +1,9 @@
 from DBtools.init_db import init_DB
 import DBtools.utils as utils
 import math
-from collections import Counter
-import matplotlib.pyplot as plt
 from relation_extractor import RelationExtractor
-from scene_graph_visualization import SceneGraph
 from InsertDataBase.CreateTables import CreateScenarioBehaviorIndexTable
 import numpy as np
-import pandas as pd
-import csv
-import seaborn as sns
-import pymysql
 import json
 
 
@@ -76,10 +69,9 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
     insertIndexSql = "insert into Scenario_Behavior_Index" + table + "(ego_vehicle,time_stamp_begin,time_stamp_end,v2v_interaction_count,v2v_interaction_id,behavior) " \
                                                                      "values(%s,%s,%s,%s,%s,%s)"
     AllVehicleList = utils.SearchAllVehicleIDFromDB(cursor, table)
-    print(len(AllVehicleList))
     behavior_interaction_arr = np.zeros((3, 11)).astype(np.int)
     all_trajectory_num = 0
-    for vehicle in AllVehicleList[:100]:
+    for vehicle in AllVehicleList:
         ChunkNum, TimeSecList, InteractionTemporalList, LaneTemporalList, LaneChangeTimeRecord = BahaviorRecognition(cursor, ChunkSize, vehicle, table)
         print(vehicle)
         behavior = "go straight"

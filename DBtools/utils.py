@@ -2,8 +2,6 @@ import json
 import numpy as np
 from scipy.spatial import distance
 from shapely import geometry
-from DBtools.init_db import init_DB
-from collections import Counter
 
 
 def rotate_around_center(pts, center, yaw):
@@ -568,26 +566,3 @@ def SearchVehicleTotalTime(cursor, vehicle_id, table):
         max_time = i[0]
         min_time = i[1]
     return max_time - min_time
-
-
-if __name__ == '__main__':
-    conn, cursor = init_DB("Argoverse_MIA_Scenario_DB")
-    # SearchDB(cursor)
-    # SearchNodeIDOnWayFromDB(cursor, 10000, x_range=[1030,1032],y_range=[960,962])
-    # SearchTrafficParticipantByTime(cursor, 9000)
-    # SearchTrafficParticipantTiming(cursor, 41, 2600)
-    # SearchTrafficParticipantProperty(cursor,1)
-    # SearchMap(cursor)
-    # SearchNodeIDFromDB(cursor)
-    # SearchLinkWayFromDB(cursor)
-    # SearchNodeIDOnWayFromDB(cursor, 10001)
-    # SearchWayTypeFromDB(cursor, 10001)
-    # SearchChannelizationOnWayFromDB(cursor, 10000)
-    # SearchWayFromDB(cursor)
-    # SearchLineThinDashedNodeFromDB(cursor)
-    # SearchNodeIDFromDB(cursor)
-    # SearchOnWhichLaneFromDB(cursor, 261, 230640)
-    # SearchAdjacentLaneFromDB(cursor, 3)
-    # SearchAdjacentLaneFromDB(cursor, "2")
-    # SearchFrontAdjacentLaneFromDB(cursor, 9605252)
-    cursor.close()

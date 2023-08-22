@@ -5,7 +5,7 @@ import networkx as nx
 from relation_extractor import Relations, RelationExtractor, RELATION_COLORS, NODE_NTYPE, NODE_COLORS
 from enum import Enum
 from DBtools.init_db import init_DB
-
+import argparse
 
 class NodeType(Enum):
     car = 0
@@ -111,11 +111,16 @@ class SceneGraph:
         plt.show()
 
 
-if __name__=='__main__':
-    # conn, cursor = init_DB("HighD_I_Scenario_DB")
-    # Graph = SceneGraph(cursor, 211, 185240, "_1")
-    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
-    Graph = SceneGraph(cursor, 11, 100, "_8")
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--DB', type=str, default=None)
+    parser.add_argument('--Table', type=str, default=None)
+    parser.add_argument('--Ego', type=int, default=None)
+    parser.add_argument('--Timestamp', type=int, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
+    table = "_" + args.Table
+    Graph = SceneGraph(cursor, args.Ego, args.Timestamp, table)
     Graph.add_vehicle_vehicle_relation()
     Graph.add_vehicle_node_relation()
     Graph.add_vehicle_lane_relation()

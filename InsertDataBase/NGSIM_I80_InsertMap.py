@@ -1,10 +1,12 @@
+import sys
+sys.path.append("../")
 import pandas
 import numpy as np
 import pymysql
 import json
 from InsertDataBase.CreateTables import *
 from DBtools.init_db import init_DB
-
+import argparse
 
 y_sign = -1
 upper_lanes = np.array([-2, 11.5, 23.5, 35, 48, 60, 75, 90]) * 0.3048
@@ -71,7 +73,11 @@ for i in range(len(way_node)):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("NGSIM_I_80_Scenario_DB")
+    parser = argparse.ArgumentParser()
+    # "NGSIM_I_80_Scenario_DB"
+    parser.add_argument('--DB', type=str, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
     insertNodeInfoSql = "insert into Node_Info(node_id,local_x,local_y) " \
                           "values(%s,%s,%s)"
     insertWayInfoSql = "insert into Way_Info(way_id,way_type,road_channelization,l_neighbor_id,r_neighbor_id) " \

@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../")
 import pymysql
 import math
 import pandas as pd
@@ -5,19 +7,14 @@ import numpy as np
 from InsertDataBase.Interaction_MergingZS_InsertMap import LaneCurve
 from InsertDataBase.CreateTables import *
 from DBtools.init_db import init_DB
+import argparse
 
-VehicleInfo = list()
-table = "_0"
-file = "../DataSet/INTERACTION-Dataset-DR-v1_1/recorded_trackfiles/DR_CHN_Merging_ZS/vehicle_tracks_000.csv"
-VehicleInfo = pd.read_csv(file, decimal=",", low_memory=False)
-VehicleInfo = np.array(VehicleInfo)
-VehicleInfo = np.hstack((VehicleInfo[:, 0:4], VehicleInfo[:, 4:].astype(np.float)))
-print(type(VehicleInfo))
-
-
-def InsertTable(cursor, table):
+def InsertTable(cursor, table, file):
+    VehicleInfo = pd.read_csv(file, decimal=",", low_memory=False)
+    VehicleInfo = np.array(VehicleInfo)
+    VehicleInfo = np.hstack((VehicleInfo[:, 0:4], VehicleInfo[:, 4:].astype(np.float)))
     insertTimingSql = "insert into Traffic_timing_state" + table + "(time_stamp,vehicle_id,local_x,local_y,velocity_x,velocity_y,orientation,lane_id) " \
-                "values(%s,%s,%s,%s,%s,%s,%s,%s)"
+                      "values(%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(VehicleInfo)):
         time_stamp = VehicleInfo[i][2]
         vehicle_id = VehicleInfo[i][0]
@@ -43,7 +40,7 @@ def InsertTable(cursor, table):
         print(i)
 
     insertPropertySql = "insert into Traffic_participant_property" + table + "(vehicle_id,vehicle_class,vehicle_length,vehicle_width) " \
-                "values(%s,%s,%s,%s) ON DUPLICATE KEY UPDATE vehicle_class = vehicle_class,vehicle_length = vehicle_length,vehicle_width = vehicle_width"
+                        "values(%s,%s,%s,%s) ON DUPLICATE KEY UPDATE vehicle_class = vehicle_class,vehicle_length = vehicle_length,vehicle_width = vehicle_width"
     for i in range(len(VehicleInfo)):
         vehicle_id = VehicleInfo[i][0]
         vehicle_type = VehicleInfo[i][3]
@@ -58,10 +55,18 @@ def InsertTable(cursor, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Testing_Scenario_DB")
+    parser = argparse.ArgumentParser()
+    # 'Interaction_MergingZS_Scenario_DB'
+    parser.add_argument('--DB', type=str, default=None)
+    parser.add_argument('--Table', type=str, default=None)
+    # eg: file = "../DataSet/INTERACTION-Dataset-DR-v1_1/recorded_trackfiles/DR_CHN_Merging_ZS/vehicle_tracks_000.csv"
+    parser.add_argument('--File', type=str, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
+    table = "_" + args.Table
     CreateTrafficParticipantPropertyTable(cursor, table)
     CreateTrafficTimingStateTable(cursor, table)
-    InsertTable(cursor, table)
+    InsertTable(cursor, table, args.File)
 
     cursor.close()
     conn.commit()

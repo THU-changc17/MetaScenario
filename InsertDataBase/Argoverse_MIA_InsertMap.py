@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../")
 import pymysql
 import math
 import pyproj
@@ -5,7 +7,7 @@ import xml.etree.ElementTree as xml
 import json
 from InsertDataBase.CreateTables import *
 from DBtools.init_db import init_DB
-
+import argparse
 
 class Point:
     def __init__(self):
@@ -92,8 +94,8 @@ def get_adjacent_way(element):
     return adjacent_way_dict
 
 
-def InsertMapTable(cursor):
-    e = xml.parse('../DataSet/Argoverse-Dataset/pruned_argoverse_MIA_10316_vector_map.xml').getroot()
+def InsertMapTable(cursor, file):
+    e = xml.parse(file).getroot()
 
     point_dict = dict()
     for node in e.findall("node"):
@@ -133,13 +135,19 @@ def InsertMapTable(cursor):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Argoverse_MIA_Scenario_DB")
+    parser = argparse.ArgumentParser()
+    # "Argoverse_MIA_Scenario_DB"
+    parser.add_argument('--DB', type=str, default=None)
+    # '../DataSet/Argoverse-Dataset/pruned_argoverse_MIA_10316_vector_map.xml'
+    parser.add_argument('--File', type=str, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
     CreateNodeInfoTable(cursor)
     CreateWayInfoTable(cursor)
     CreateNodeToWayTable(cursor)
     CreateLaneMetaTable(cursor)
     CreateAdditionalConditionTable(cursor)
-    InsertMapTable(cursor)
+    InsertMapTable(cursor, args.File)
 
     cursor.close()
     conn.commit()

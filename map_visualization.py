@@ -3,6 +3,7 @@ import matplotlib.axes
 import matplotlib.pyplot as plt
 import DBtools.utils as utils
 from DBtools.init_db import init_DB
+import argparse
 # from InsertDataBase.Interaction_Intersection_EP0_InsertParticipant import ProcessPolygon
 
 def set_visible_area(x_list, y_list, axes):
@@ -71,8 +72,10 @@ def draw_map(cursor, axes):
         plt.plot(x_list, y_list, **type_dict)
         for idx in range(len(x_list)):
             plt.plot(x_list[idx], y_list[idx], '.y', markersize=2.)
+            # examples for adding ID text:
             # axes.text(x_list[idx], y_list[idx], way_id, fontsize=8, color="r")
 
+    # Only for Intersection Scenario plotting Polygon:
     # polygon_list, _ = ProcessPolygon(cursor)
     # for polygon in polygon_list:
     #     pylogon_x = list(polygon[:, 1])
@@ -138,12 +141,14 @@ def draw_map_part(cursor, axes, Xlist, Ylist):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--DB', type=str, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
     fig, axes = plt.subplots(1, 1)
     fig.canvas.set_window_title("DatasetMap Visualization")
     draw_map(cursor, axes)
+    # examples for plot local range:
     # draw_map_part(cursor, axes, Xlist=[1000, 1040], Ylist=[950, 1000])
-    # draw_map_part(cursor, axes, Xlist=[400,440],Ylist=[1010,1050])
     fig.set_size_inches(19.2, 10.8)
-    # plt.savefig("Merging_Map.eps")
     plt.show()

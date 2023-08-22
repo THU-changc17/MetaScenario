@@ -1,6 +1,6 @@
 import pymysql
 from DBtools.init_db import init_DB
-
+import argparse
 
 def AlterMapForegnKey(cursor):
     AlterForeignKey = 'ALTER TABLE Node_To_Way ADD FOREIGN KEY (way_id) REFERENCES Way_Info(way_id)'
@@ -36,9 +36,12 @@ def AlterScenarioBehaviorForegnKey(cursor, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_Intersection_EP0_Scenario_DB")
-    table = "_7"
-    print(table)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--DB', type=str, default=None)
+    parser.add_argument('--Table', type=str, default=None)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
+    table = "_" + args.Table
     AlterMapForegnKey(cursor)
     AlterParticipantForegnKey(cursor, table)
     AlterScenarioBehaviorForegnKey(cursor, table)
