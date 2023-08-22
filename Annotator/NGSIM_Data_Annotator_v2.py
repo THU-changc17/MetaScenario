@@ -1,3 +1,7 @@
+import sys
+sys.path.append("../")
+from scene_graph_visualization import SceneGraph
+import argparse
 from DBtools.init_db import init_DB
 import DBtools.utils as utils
 import math
@@ -74,6 +78,7 @@ def BahaviorRecognition(cursor, vehicle_id, table):
     BehaviorTimeRecord = list()
     BehaviorChange = list()
     TimeInterval = 100
+
     r = RelationExtractor(cursor, vehicle_id, table)
     for NowTime in range(min_timestamp, max_timestamp, TimeInterval):
         # r.get_vehicle_relation(NowTime)
@@ -151,16 +156,16 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("NGSIM_I_80_Scenario_DB")
-    ChunkSize = 10
-    all_arr = np.zeros((4, 11)).astype(np.int)
-    for i in range(1, 4):
-        print("table: ", i)
-        table = "_" + str(i)
-        CreateScenarioBehaviorIndexTable(cursor, table)
-        arr = BehaviorStatisticAnnotate(cursor, ChunkSize, table)
-        all_arr = all_arr + arr
-        print(all_arr)
+    # "NGSIM_I_80_Scenario_DB"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--DB', type=str, default=None)
+    parser.add_argument('--Table', type=str, default=None)
+    parser.add_argument('--Chunksize', type=int, default=10)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
+    table = "_" + args.Table
+    CreateScenarioBehaviorIndexTable(cursor, table)
+    arr = BehaviorStatisticAnnotate(cursor, args.Chunksize, table)
 
     cursor.close()
     conn.commit()

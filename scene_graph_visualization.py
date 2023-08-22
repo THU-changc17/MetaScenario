@@ -76,7 +76,7 @@ class SceneGraph:
 
 
     def visualize(self):
-        plt.figure(figsize=(8,8))
+        plt.figure(figsize=(7, 7))
         pos = nx.kamada_kawai_layout(self.g)
         nx.draw_networkx_nodes(self.g, pos, node_size=100, node_color=self.vehicle_fill_color)
         ax = plt.gca()

@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../")
 from DBtools.init_db import init_DB
 import DBtools.utils as utils
 import math

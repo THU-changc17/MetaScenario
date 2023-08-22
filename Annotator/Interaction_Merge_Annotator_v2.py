@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../")
+import argparse
 from DBtools.init_db import init_DB
 import DBtools.utils as utils
 import math
@@ -157,16 +160,16 @@ def BehaviorStatisticAnnotate(cursor, ChunkSize, table):
 
 
 if __name__ == '__main__':
-    conn, cursor = init_DB("Interaction_MergingZS_Scenario_DB")
-    ChunkSize = 10
-    all_arr = np.zeros((5, 11)).astype(np.int)
-    for i in range(0, 11):
-        print("table: ", i)
-        table = "_" + str(i)
-        CreateScenarioBehaviorIndexTable(cursor, table)
-        arr = BehaviorStatisticAnnotate(cursor, ChunkSize, table)
-        all_arr = all_arr + arr
-        print(all_arr)
+    # "Interaction_MergingZS_Scenario_DB"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--DB', type=str, default=None)
+    parser.add_argument('--Table', type=str, default=None)
+    parser.add_argument('--Chunksize', type=int, default=10)
+    args = parser.parse_args()
+    conn, cursor = init_DB(args.DB)
+    table = "_" + args.Table
+    CreateScenarioBehaviorIndexTable(cursor, table)
+    arr = BehaviorStatisticAnnotate(cursor, args.Chunksize, table)
 
     cursor.close()
     conn.commit()

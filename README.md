@@ -99,7 +99,7 @@ adjacent traffic participants.
 
 `cd Annotator`
 
-`python Interaction_Merge_Anotator.py`
+`python Interaction_Merge_Anotator.py --DB Interaction_MergingZS_Scenario_DB --Table 0`
 
 The annotation results will be recorded in Scenario_Behavior_Index Table.
 
@@ -108,7 +108,7 @@ If you find our work is useful in your research, please consider citing:
 ```
 @article{chang2022metascenario,
   title={Metascenario: A framework for driving scenario data description, storage and indexing},
-  author={Chang, Cheng and Cao, Dongpu and Chen, Long and Su, Kui and Su, Kuifeng and Su, Yuelong and Wang, Fei-Yue and Wang, Jue and Wang, Ping and Wei, Junqing and others},
+  author={Chang, Cheng and Cao, Dongpu and Chen, Long and Su, Kui and Su, Kuifeng and Su, Yuelong and Wang, Fei-Yue and Wang, Jue and Wang, Ping and Wei, Junqing and Wu, Gansha and Wu, Xiangbin and Xu, Huile and Zheng, Nanning and Li, Li},
   journal={IEEE Transactions on Intelligent Vehicles},
   volume={8},
   number={2},
