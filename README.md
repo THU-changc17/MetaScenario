@@ -113,7 +113,7 @@ If you find our work is useful in your research, please consider citing:
   volume={8},
   number={2},
   pages={1156--1175},
-  year={2022},
+  year={2023},
   publisher={IEEE}
 }
 ```
